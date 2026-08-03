@@ -80,6 +80,8 @@ topic_descriptions:
   - Digital Workflow and Post-Processing
   - Photographic Genres and Image Critique
 ```
+## Configuration
+The configuration file is in the mapped config folder when running with docker. You'll need to update it to either use codex or the URL of your LLM.
 
 
 ### Project status
