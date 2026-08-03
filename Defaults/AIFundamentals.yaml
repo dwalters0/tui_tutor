@@ -1,0 +1,27 @@
+course: Bachelor of Information Technology
+course_code: BInfoTech
+
+name: AI Fundamentals
+unit_code: AI01
+
+level: Working IT Professional
+
+total_duration: 24
+
+outcomes:
+- Prepare for AI GRC type roles
+- Understand the security risks of modern AI architectures
+- Understand how AI systems are built and deployed in real organisations
+
+topic_descriptions:
+- inference vs training
+- Fine-tuning
+- RAG architectures
+- Embeddings
+- Vector Databases
+- AI agent architectures
+- MLOps (Machine Learning Operations)
+- AI data leakage risks
+
+
+

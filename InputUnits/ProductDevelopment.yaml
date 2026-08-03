@@ -1,0 +1,25 @@
+course: Bachelor of Information Technology
+course_code: BInfoTech
+
+name: Software Product Development
+unit_code: PD01
+
+level: First Year University
+
+total_duration: 24
+
+outcomes:
+- Explain the principles of successful software product development from idea through to iteration.
+- Identify user problems and evaluate whether proposed solutions provide meaningful value.
+- Apply product thinking to balance user experience, technical complexity, cost, and delivery time.
+- Design simple experiments to validate product assumptions and guide product decisions.
+- Analyse user feedback and product metrics to support evidence-based prioritisation.
+- Identify ethical, accessibility, privacy, and commercial considerations relevant to software products.
+
+topic_descriptions:
+- Understanding Users and Defining Problems
+- Product Discovery and Validation
+- Product Design and User Experience
+- Prioritisation, Roadmaps, and Product Strategy
+- Building, Measuring, and Iterating
+- Commercial, Ethical, and Sustainable Product Development

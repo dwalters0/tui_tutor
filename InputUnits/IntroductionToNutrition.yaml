@@ -1,0 +1,31 @@
+course: Bachelor of Food and Nutrition
+course_code: BNutrition
+name: Introduction to Nutrition
+unit_code: NUT01
+level: First Year University
+total_duration: 24
+outcomes:
+- Describe methods for collecting dietary intake and estimating energy expenditure,
+    and use principles of energy balance to determine an individual's energy balance
+    status.
+- Identify and describe common food sources, functions and absorption of micronutrients
+    (vitamins and minerals) and discuss the causes and consequences of micronutrient
+    deficiencies and toxicities.
+- Identify and describe the main food sources, structure, functions, digestion and
+    absorption of macronutrients (protein, fat, carbohydrate), water and alcohol and
+    discuss the consequences of macronutrient imbalances.
+- Apply simple techniques to measure body composition of individuals.
+- Apply simple dietary analysis techniques to assess diets.
+- Describe the role of the Australian Dietary Guidelines in health, and the application
+    of food guides in assessing diets of populations.
+topic_descriptions:
+- Introduction to Food and Nutrition
+- Measurement of Dietary Intake
+- Energy Expenditure and Body Composition
+- Energy
+- Macronutrients
+- Micronutrients
+- Nutrient Reference Values
+- Dietary Guidelines
+- Energy Balance and Fad Diets
+

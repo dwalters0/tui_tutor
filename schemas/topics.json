@@ -1,0 +1,35 @@
+{"type": "object",
+    "properties": {
+        "topic": {
+            "type": "string"
+        },
+        "lesson_outlines": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "title": {
+                        "type": "string"
+                    },
+                    "summary": {
+                        "type": "string"
+                    },
+                    "complete": {
+                        "type": "boolean"
+                    }
+                    },
+                "required": [
+                    "title",
+                    "summary",
+                    "complete"
+                ],
+                "additionalProperties": false
+            }
+        }
+    },
+    "required": [
+        "topic",
+        "lesson_outlines"
+    ],
+    "additionalProperties": false
+}

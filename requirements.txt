@@ -1,0 +1,12 @@
+#llama-index-core
+#llama-index-embeddings-openai
+#llama-index-embeddings-openai-like
+#llama-index-embeddings-huggingface
+#llama-index-llms-ollama
+PyYAML
+requests
+rich
+#sentence-transformers
+#torch
+#pymupdf
+pylatexenc

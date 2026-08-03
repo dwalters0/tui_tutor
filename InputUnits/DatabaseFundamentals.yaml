@@ -1,0 +1,26 @@
+course: Bachelor of Information Technology
+course_code: BInfoTech
+
+name: Database Fundamentals
+unit_code: DB01
+
+level: First Year University
+
+total_duration: 24
+
+outcomes:
+- Apply a database modelling technique using an ER and EER diagram, and use a transformation process to change these to a relational database design.
+- Identify the appropriate normalization techniques for database design.
+- Implement a database system using SQL and apply the relevant knowledge in database management and administration.
+- Define the underlying model of relational database operations using relational algebra.
+- Identify the possible risks and ethical and social considerations relevant to a designed system.
+
+topic_descriptions:
+- Entity-Relationship / Enhanced-Entity Relationship Modelling and transformation
+- Normalisation
+- Relational algebra
+- Structured Query Language
+- Procedural Language extensions to the Structured Query Language
+
+
+

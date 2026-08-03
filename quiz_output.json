@@ -1,0 +1,22 @@
+{
+    "question1": "What is the primary purpose of Inference in AI systems?",
+    "question1_correct_answer": "To make predictions or draw conclusions about future events, behaviors, or characteristics.",
+    "question1_incorrect_answer_1": "To analyze patterns and relationships in raw input data",
+    "question1_incorrect_answer_2": "To optimize machine learning algorithms",
+    "question1_incorrect_answer_3": "To improve the accuracy of decision-making systems",
+    "question2": "What type of Inference is used in medical diagnosis?",
+    "question2_correct_answer": "Abductive Inference.",
+    "question2_incorrect_answer_1": "Deductive Inference",
+    "question2_incorrect_answer_2": "Inductive Inference",
+    "question2_incorrect_answer_3": "Bayesian Inference",
+    "question3": "What is the main difference between Deductive and Inductive Inference?",
+    "question3_correct_answer": "Deductive Inference uses logical rules, while Inductive Inference involves making generalizations from specific observations.",
+    "question3_incorrect_answer_1": "Deductive Inference uses empirical evidence",
+    "question3_incorrect_answer_2": "Inductive Inference relies on probabilistic models",
+    "question3_incorrect_answer_3": "Both Deductive and Inductive Inference are based on statistical models",
+    "question4": "Which of the following is a key concept in Inference?",
+    "question4_correct_answer": "Probability Theory.",
+    "question4_incorrect_answer_1": "Graph-based Methods",
+    "question4_incorrect_answer_2": "Neural Networks",
+    "question4_incorrect_answer_3": "Markov Chains"
+}
