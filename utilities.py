@@ -77,7 +77,7 @@ def print_like_it_were_just_genned(content):
     for chunk in chunks:
         chunk_markdown = Markdown(chunk)
         console.print(chunk_markdown)
-        input()
+        #input()
 
 
 def pick_MenuItem_from_list(items, title):

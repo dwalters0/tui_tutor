@@ -123,7 +123,7 @@ def generate_line_by_line(prompt, print_output=True) :
         for chunk in chunks:
             chunk_markdown = Markdown(chunk)
             console.print(chunk_markdown)
-            input()
+            #input()
     return response_text
 
 def generate(prompt, print_output=True) :
