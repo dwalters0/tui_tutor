@@ -7,9 +7,11 @@ from pathlib import Path
 
 from rich.console import Console
 from rich.markdown import Markdown
+console = Console()
+
 from pylatexenc.latex2text import LatexNodes2Text
 import re
-console = Console()
+
 
 def there_is_a_curricula_folder_with_something_in_it() -> bool:
     curricula_folder = Path(__file__).resolve().parent / "Curricula"

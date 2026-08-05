@@ -90,7 +90,7 @@ def get_rag_or_warn(unit_folder, rag_question):
         #if option == "q" or option == "Q":
         #    exit()
 
-def AddTopicDescriptionsToUnit(unit):
+def AddTopicDescriptionsToUnit(unit) -> Unit:
     topic_descriptions = []
     for topic in unit.topic_descriptions:
         rag_question=f"""

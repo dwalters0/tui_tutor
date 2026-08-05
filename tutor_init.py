@@ -1,8 +1,12 @@
+import os
+import sys
 from pathlib import Path
 from functools import partial
 from dataclasses import dataclass, field
-import os
-import sys
+
+
+from rich.console import Console
+console = Console()
 
 from tutor_classes import Lesson, Topic, LessonOutline, Unit
 
@@ -15,6 +19,8 @@ from gen_teach import teach
 from gen_curriculum import generate_next_lesson, finish_lesson,generate_lesson_content_file, \
     AddTopicDescriptionsToUnit,generate_topic_files, generate_all_lessons_for_a_topic
 
+from tutor_live_text import stream_panel
+
 @dataclass
 class MenuItem:
     title: str
@@ -25,8 +31,9 @@ class Menu:
     menu_items: list[MenuItem] = field(default_factory=list[MenuItem])
 
     def show_and_select(self):
-        title = "Main Menu"
-        print(f"\n{title}\n" + "-" * len(title))
+        stream_panel("## TUI Tutor","Menu")
+        print("\n")
+        #print(f"\n{title}\n" + "-" * len(title))
 
         for i, item in enumerate(self.menu_items):
             print(f"{i}: {item.title}")
@@ -100,7 +107,27 @@ def menu_get_next_lesson() -> MenuItem | None:
 
     completed = "■" * current_topic.progress.Completed
     incomplete = "□" * (current_topic.progress.Total - current_topic.progress.Completed)
-    title = f"Continue from last completed\n   {current_topic.unit_code} Topic {current_topic.order + 1}:{current_topic.title} {completed}{incomplete}\n   {chosen_lesson_outline.title}"
+
+    topic_completion = current_topic.progress.Completed / current_topic.progress.Total * 100
+    first_line = f"   Continue from last completed"
+    second_line = f"   {current_topic.unit_code} Topic {current_topic.order + 1}:{current_topic.title}"
+    third_line = f"   Lesson {chosen_lesson_outline.order + 1} {chosen_lesson_outline.title}"
+    fourth_line = f"   Topic completion: {topic_completion:.2f}%."
+    console_width = console.width
+    if len(first_line) < console_width and len(second_line) < console_width - 4:
+        width = max(len(first_line), len(second_line)) + 4
+    else:
+        width = console_width
+    border = width * "-"
+    title = border + "\n"
+    title += first_line + "\n"
+    title += second_line + "\n"
+    title += third_line + "\n"
+    title += fourth_line + "\n"
+    title += "   " + border + "\n"
+
+
+    #title = f"Continue from last completed\n    {completed}{incomplete}\n   "
     callable_partial = partial(run_menu_get_next_lesson, next_lesson, current_topic,chosen_lesson_outline)
     return MenuItem(title,callable_partial)
 
@@ -118,9 +145,9 @@ def menu_get_unit_continuations() -> MenuItem | None:
         elif unit_progress.Completed == unit_progress.Total:
             title = f"Review {unit.name}"
         else:
-            completed = "■" * unit_progress.Completed
-            incomplete = "□" * (unit_progress.Total - unit_progress.Completed)
-            title = f"Continue {unit.name}\n   {completed}{incomplete}"
+            #completed = "■" * unit_progress.Completed
+            #incomplete = "□" * (unit_progress.Total - unit_progress.Completed)
+            title = f"Continue {unit.name} ({(unit_progress.Completed / unit_progress.Total * 100):.2f}% complete)."
 
         callable_partial = get_unit_continuations_action(unit)
         if callable_partial:
@@ -228,12 +255,31 @@ def menu_get_generate_unit_files() -> MenuItem:
 def run_generate_unit_files():
     unit_path = pick_only_file(Path(__file__).parent / "InputUnits")
     print("\nSelected file:")
-    print(unit_path)
-    print("This process can take quite some time...")
+    #print(unit_path)
+
+    display_panel = Panel("Loading",title="Loading",border_style="cyan")
+
+    live =  Live(
+            display_panel,
+            console=console,
+            refresh_per_second=10)
+
+    display_panel
+
+    for completed, step in enumerate(steps, start=1):
+        live.update(make_display(step, completed - 1, len(steps)))
+
+        # Replace this with your real work.
+        time.sleep(1.5)
+
+        live.update(make_display(step, completed, len(steps)))
+
+
     #load the original user input yaml file
     unit = Unit.load(unit_path)
     #copies the input yaml file and adds topic_descriptions to it for each topic
     unit = AddTopicDescriptionsToUnit(unit)
+
     #generates topic files to populate the topics folder
     generate_topic_files(unit)
 
