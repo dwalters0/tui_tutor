@@ -7,7 +7,7 @@ import sys
 from tutor_classes import Lesson, Topic, LessonOutline, Unit
 
 from utilities import print_box,pick_folder,pick_topic,pick_lesson,pick_folder_title, \
-    pick_only_file, pick_from_list, there_are_generated_topics
+    pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it
 
 from configuration import LastCompletedLesson
 
@@ -61,13 +61,15 @@ def run_menu_get_next_lesson(next_lesson, next_topic, chosen_lesson_outline):
     finish_lesson(chosen_lesson_outline, next_topic, next_lesson)
 
 def menu_get_next_lesson() -> MenuItem | None:
-    if not there_are_generated_topics():
+    if not there_is_a_curricula_folder_with_something_in_it():
         return None
     last_lesson_ref = LastCompletedLesson.load()
     if not last_lesson_ref:
         return None
     last_lesson = Lesson.load(last_lesson_ref.lesson_path)
     last_topic = Topic.load(last_lesson_ref.topic_path)
+    if not last_lesson or not last_topic:
+        return None
 
     last_lesson_outline = LessonOutline.get_lesson_outline_by_id(last_lesson.outline_id)
 
@@ -103,7 +105,7 @@ def menu_get_next_lesson() -> MenuItem | None:
     return MenuItem(title,callable_partial)
 
 def menu_get_unit_continuations() -> MenuItem | None:
-    if not there_are_generated_topics():
+    if not there_is_a_curricula_folder_with_something_in_it():
         return None
     all_units = Unit.load_all_units()
     menu_items  = []
@@ -149,7 +151,7 @@ def run_menu_get_unit_continuations(next_topic,chosen_lesson_outline):
     finish_lesson(chosen_lesson_outline, next_topic, next_lesson)
 
 def menu_get_progress_report() -> MenuItem | None:
-    if not there_are_generated_topics():
+    if not there_is_a_curricula_folder_with_something_in_it():
         return None
     title = "Progress report"
     callable_partial = partial(run_progress_report)
@@ -158,14 +160,19 @@ def menu_get_progress_report() -> MenuItem | None:
 def run_progress_report():
     curricula_folder = Path(__file__).resolve().parent / "Curricula"
     courses = curricula_folder.iterdir()
+    courses = [course for course in courses if course.is_dir()]
     for course in courses:
         print(course.stem)
         units = course.iterdir()
+        units = [unit for unit in units if unit.is_dir()]
         for unit in units:
             print(f"  {unit.stem}")
-            topics = (Path(unit) / "topics").iterdir()
+            topics = (Path(unit) / "topics").glob("*.yaml")
+            topics_loaded = []
             for topic in topics:
-                current_topic = Topic.load(topic)
+                topics_loaded.append(Topic.load(topic))
+            topics_loaded.sort(key=lambda topic: topic.order)
+            for current_topic in topics_loaded:
                 completed = "■" * current_topic.progress.Completed
                 incomplete = "□" * (current_topic.progress.Total - current_topic.progress.Completed)
                 print(f"    {current_topic.title} {completed}{incomplete} {current_topic.progress.Completed}/{current_topic.progress.Total}")
@@ -173,7 +180,7 @@ def run_progress_report():
     input("Press Enter to continue...")
 
 def menu_get_select_any_lesson() -> MenuItem | None:
-    if not there_are_generated_topics():
+    if not there_is_a_curricula_folder_with_something_in_it():
         return None
     title = "Select any lesson"
     callable_partial = partial(run_select_any_lesson)
@@ -193,7 +200,7 @@ def run_select_any_lesson():
     print("Loading topic files...")
     for topic_file in topic_files:
         topics.append(Topic.load(Path(unit_path) / "topics" / topic_file))
-
+    topics.sort(key=lambda topic: topic.order)
     topic = pick_topic(topics)
 
     chosen_lesson_outline = pick_lesson(topic.lesson_outlines)
@@ -236,7 +243,7 @@ def menu_get_exit() -> MenuItem:
     return MenuItem(title, callable_partial)
 
 def menu_get_generate_lessons() -> MenuItem | None:
-    if not there_are_generated_topics():
+    if not there_is_a_curricula_folder_with_something_in_it():
         return None
     title = "Generate lessons"
     callable_partial = partial(run_generate_lessons)

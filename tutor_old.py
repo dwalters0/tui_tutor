@@ -66,12 +66,14 @@ def main():
         progress = dict()
         curricula_folder = Path(__file__).resolve().parent / "Curricula"
         courses = curricula_folder.iterdir()
+        courses = [course for course in courses if course.is_dir()]
         for course in courses:
             print(course.stem)
             units = course.iterdir()
+            units = [unit for unit in units if unit.is_dir()]
             for unit in units:
                 print(f"  {unit.stem}")
-                topics = (Path(unit) / "topics").iterdir()
+                topics = (Path(unit) / "topics").glob("*.yaml")
                 for topic in topics:
                     current_topic = Topic.load(topic)
                     completed = "■" * current_topic.progress.Completed

@@ -43,8 +43,9 @@ class Unit:
     def topics(self):
         topics = []
         topic_folder = Path(self.unit_folder) / "topics"
-        for topic_file in topic_folder.iterdir():
-            topics.append(Topic.load(topic_file))
+        for topic_file in topic_folder.glob("*.yaml"):
+            if topic_file.is_file():
+                topics.append(Topic.load(topic_file))
         return topics
 
 
@@ -63,10 +64,11 @@ class Unit:
 
     def get_first_topic(self):
         topic_folder = Path(self.unit_folder) / "topics"
-        for topic_file in topic_folder.iterdir():
-            topic = Topic.load(topic_file)
-            if topic.order == 0:
-                return topic
+        for topic_file in topic_folder.glob("*.yaml"):
+            if topic_file.is_file():
+                topic = Topic.load(topic_file)
+                if topic and topic.order == 0:
+                    return topic
         return None
 
     @property
@@ -74,7 +76,7 @@ class Unit:
         topic_count = 0
         completed_topic = 0
         topic_folder = Path(self.unit_folder) / "topics"
-        for topic_file in  Path(topic_folder).iterdir():
+        for topic_file in  Path(topic_folder).glob("*.yaml"):
             topic_count += 1
             topic = Topic.load(topic_file)
             if topic.is_complete:
@@ -159,8 +161,10 @@ class Unit:
         if not curricula_folder.exists():
             return []
         courses = curricula_folder.iterdir()
+        courses = [course for course in courses if course.is_dir()]
         for course in courses:
             units = course.iterdir()
+            units = [unit for unit in units if unit.is_dir()]
             for unit in units:
                 for unit_file in unit.glob("*.yaml"):
                     all_units.append(cls.load(unit_file))

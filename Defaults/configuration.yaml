@@ -5,29 +5,13 @@ codex:
 
 openapi_api:
     #eg. http://localhost:11434/v1/chat/completions
-  url: http://localhost:11434/v1/chat/completions
+  url: http://host.docker.internal:11434/v1/chat/completions
     #eg. gemma4:e2b
   model: gemma4:e2b
-    #API key
+    #The authorization should just contain the API key if there is one
   authorization: none
   #streaming kind of works and only for chat
   # line_by_line or streaming
   output_mode: line_by_line
 
-rag:
-  model: embeddinggemma
-
-rag_embedding:
-  url: http://localhost:11434/v1
-  authorization: none
-  chunk_size: 128
-  overlap: 64
-
-rag_retrieval:
-    #When using local inference, might be good to point this at an inference engine without
-    #gpu access.
-      # PRO: it uses CPU, leaving VRAM for the LLM. Retrieval is fast anyway.
-      # CON: loading to RAM instead of VRAM might be a little bit slower.
-  url: http://localhost:11434/v1
-  authorization: none
 

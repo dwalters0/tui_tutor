@@ -36,16 +36,17 @@ The goal is to recreate the feeling of working through an online course.
 
 It's recommended to use docker or podman to host the application.
 ```
-  docker run -d \
-  --name tui_tutor \
-  -p 2222:22 \
-  -v /home/user/tui_tutor/curricula:/opt/app/Curricula \
-  -v /home/user/tui_tutor/inputunits:/opt/app/InputUnits \
-  -v /home/user/tui_tutor/config:/opt/app/config \
-  ghcr.io/dwalters0/tui_tutor:latest
+ docker run -d \
+ --name tui_tutor \
+ -p 2222:22 \
+ -v codex-data:/root/.codex \  
+ -v /run/media/dan/SSD/Docker/tutor/curricula:/opt/app/Curricula \
+ -v /run/media/dan/SSD/Docker/tutor/inputunits:/opt/app/InputUnits \
+ -v /run/media/dan/SSD/Docker/tutor/config:/opt/app/config \
+ ghcr.io/dwalters0/tui_tutor:latest```
 ```
 
-Once the container is up, you can ssh into on the mapped port and log in with the credentials root:root. A ForceCommand opens the app automatically.
+Once the container is up, you can ssh into it on the mapped port and log in with the credentials root:root. A ForceCommand opens the app automatically.
 ```
 ssh -p 2222 root@localhost
 ```

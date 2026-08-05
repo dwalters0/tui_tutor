@@ -1,13 +1,11 @@
 # PyCharm
 .idea/
-
 # Python virtual environment
 .venv/
-
 # Python bytecode cache
 __pycache__/
 **/__pycache__/
 
-
 Curricula/
 config/progress.yaml
+.DS_Store

@@ -5,7 +5,7 @@ codex:
 
 openapi_api:
     #eg. http://localhost:11434/v1/chat/completions
-  url: http://localhost:11434/v1/chat/completions
+  url: http://pc.dan:11434/v1/chat/completions
     #eg. gemma4:e2b
   model: gemma4:e2b
     #API key

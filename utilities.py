@@ -11,7 +11,7 @@ from pylatexenc.latex2text import LatexNodes2Text
 import re
 console = Console()
 
-def there_are_generated_topics() -> bool:
+def there_is_a_curricula_folder_with_something_in_it() -> bool:
     curricula_folder = Path(__file__).resolve().parent / "Curricula"
     if curricula_folder.exists():
         dir_contents = curricula_folder.iterdir()
