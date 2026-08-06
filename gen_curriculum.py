@@ -126,7 +126,7 @@ def populate_topics_using_topic_descriptions(
         topic_order,
         unit_folder,
         topic_id,
-        unit_code):
+        unit_code) -> Topic:
 
     rag_question=f"""
             {topic_summary}
@@ -205,6 +205,7 @@ def generate_topic_files(unit):
             unit.unit_code
             )
         topic.save()
+        print("Generated topic {}".format(topic.title))
         order = order + 1
 
 def generate_lesson_content_file(lesson_outline, unit_code, lesson_order):

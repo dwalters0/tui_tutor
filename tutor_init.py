@@ -257,24 +257,6 @@ def run_generate_unit_files():
     print("\nSelected file:")
     #print(unit_path)
 
-    display_panel = Panel("Loading",title="Loading",border_style="cyan")
-
-    live =  Live(
-            display_panel,
-            console=console,
-            refresh_per_second=10)
-
-    display_panel
-
-    for completed, step in enumerate(steps, start=1):
-        live.update(make_display(step, completed - 1, len(steps)))
-
-        # Replace this with your real work.
-        time.sleep(1.5)
-
-        live.update(make_display(step, completed, len(steps)))
-
-
     #load the original user input yaml file
     unit = Unit.load(unit_path)
     #copies the input yaml file and adds topic_descriptions to it for each topic
