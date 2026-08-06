@@ -31,7 +31,7 @@ class Menu:
     menu_items: list[MenuItem] = field(default_factory=list[MenuItem])
 
     def show_and_select(self):
-        stream_panel("## TUI Tutor","Menu")
+        stream_panel("## Welcome to TUI Tutor","Menu")
         print("\n")
         #print(f"\n{title}\n" + "-" * len(title))
 
@@ -117,7 +117,7 @@ def menu_get_next_lesson() -> MenuItem | None:
     if len(first_line) < console_width and len(second_line) < console_width - 4:
         width = max(len(first_line), len(second_line)) + 4
     else:
-        width = console_width
+        width = console_width - 4
     border = width * "-"
     title = border + "\n"
     title += first_line + "\n"
