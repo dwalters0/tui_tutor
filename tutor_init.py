@@ -260,9 +260,11 @@ def run_generate_unit_files():
     #load the original user input yaml file
     unit = Unit.load(unit_path)
     #copies the input yaml file and adds topic_descriptions to it for each topic
+    print("Working on the topic outlines.")
     unit = AddTopicDescriptionsToUnit(unit)
 
     #generates topic files to populate the topics folder
+    print("Now we're really generating the topics.")
     generate_topic_files(unit)
 
 def menu_get_exit() -> MenuItem:

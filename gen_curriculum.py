@@ -92,7 +92,10 @@ def get_rag_or_warn(unit_folder, rag_question):
 
 def AddTopicDescriptionsToUnit(unit) -> Unit:
     topic_descriptions = []
+    total = len(unit.topic_descriptions)
+    count = 1
     for topic in unit.topic_descriptions:
+
         rag_question=f"""
             {topic.title} {unit.name}
         """
@@ -110,9 +113,11 @@ def AddTopicDescriptionsToUnit(unit) -> Unit:
         topic_summary = generate(prompt,False)
         new_topic_description = TopicDescription(title=topic.title,summary=topic_summary)
         topic_descriptions.append(new_topic_description)
-    
+        print(f"Defined {topic.title} {count}/{total}.")
+        count += 1
     unit.topic_descriptions = topic_descriptions
     unit.save()
+
     return unit
 
 
@@ -190,6 +195,8 @@ The references may or may not be relevant. Use only those that directly help ans
 
 def generate_topic_files(unit):
     order = 0
+    total = len(unit.topic_descriptions)
+    count = 1
     for topic_description in unit.topic_descriptions:
         topic_id=str(uuid.uuid4())
         topic = populate_topics_using_topic_descriptions(
@@ -205,8 +212,9 @@ def generate_topic_files(unit):
             unit.unit_code
             )
         topic.save()
-        print("Generated topic {}".format(topic.title))
-        order = order + 1
+        print(f"Finished defining {topic.title}. {count}/{total} done.")
+        order += 1
+        count += 1
 
 def generate_lesson_content_file(lesson_outline, unit_code, lesson_order):
     print("Generating lesson content for: " + lesson_outline.title)
