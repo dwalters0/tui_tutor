@@ -6,6 +6,7 @@ from dataclasses import dataclass, field
 
 
 from rich.console import Console
+from rich.table import Table
 console = Console()
 
 from tutor_classes import Lesson, Topic, LessonOutline, Unit
@@ -80,12 +81,16 @@ def menu_get_next_lesson() -> MenuItem | None:
 
     last_lesson_outline = LessonOutline.get_lesson_outline_by_id(last_lesson.outline_id)
 
+    title = ""
+
     if last_lesson_outline.complete:
         next_lesson_order = last_lesson.order + 1
+
 
         if next_lesson_order <= len(last_topic.lesson_outlines) - 1:
             current_topic = last_topic
             next_lesson_id = last_topic.lesson_outlines[next_lesson_order].id
+
         else:
             # get first lesson of next topic
             print("A new topic is being entered")
@@ -96,7 +101,6 @@ def menu_get_next_lesson() -> MenuItem | None:
                 return None
             next_lesson_order = 0
             next_lesson_id = current_topic.lesson_outlines[next_lesson_order].id
-            print(f"Current topic is now {current_topic.title}")
 
         next_lesson = Lesson.load_from_outline_id(next_lesson_id)
         chosen_lesson_outline = current_topic.lesson_outlines[next_lesson_order]
@@ -105,26 +109,46 @@ def menu_get_next_lesson() -> MenuItem | None:
         current_topic = last_topic
         chosen_lesson_outline = current_topic.lesson_outlines[last_lesson.order]
 
-    completed = "■" * current_topic.progress.Completed
-    incomplete = "□" * (current_topic.progress.Total - current_topic.progress.Completed)
 
-    topic_completion = current_topic.progress.Completed / current_topic.progress.Total * 100
-    first_line = f"   Continue from last completed"
-    second_line = f"   {current_topic.unit_code} Topic {current_topic.order + 1}:{current_topic.title}"
-    third_line = f"   Lesson {chosen_lesson_outline.order + 1} {chosen_lesson_outline.title}"
-    fourth_line = f"   Topic completion: {topic_completion:.2f}%."
-    console_width = console.width
-    if len(first_line) < console_width and len(second_line) < console_width - 4:
-        width = max(len(first_line), len(second_line)) + 4
+    first = f"Continue from last lesson:"
+    second = f"{current_topic.unit_code}, {current_topic.title}"
+    third =  f"{chosen_lesson_outline.title}"
+    max_detail = max(len(second),len(third))
+    second = second.ljust(max_detail)
+    third = third.ljust(max_detail)
+    second = "| "+second+" |"
+    third = "| "+third+" |"
+
+    if console.width > max_detail:
+        lines = (max_detail+4) * "-"
     else:
-        width = console_width - 4
-    border = width * "-"
-    title = border + "\n"
-    title += first_line + "\n"
-    title += second_line + "\n"
-    title += third_line + "\n"
-    title += fourth_line + "\n"
-    title += "   " + border + "\n"
+        lines = console.width * "-"
+
+
+    title = first+"\n"+lines+"\n"+second+"\n"+third+"\n"+lines
+
+
+
+    # completed = "■" * current_topic.progress.Completed
+    # incomplete = "□" * (current_topic.progress.Total - current_topic.progress.Completed)
+    #
+    # topic_completion = current_topic.progress.Completed / current_topic.progress.Total * 100
+    # first_line = f"   Continue from last completed"
+    # second_line = f"   {current_topic.unit_code} Topic {current_topic.order + 1}:{current_topic.title}"
+    # third_line = f"   Lesson {chosen_lesson_outline.order + 1} {chosen_lesson_outline.title}"
+    # fourth_line = f"   Topic completion: {topic_completion:.2f}%."
+    # console_width = console.width
+    # if len(first_line) < console_width and len(second_line) < console_width - 4:
+    #     width = max(len(first_line), len(second_line)) + 4
+    # else:
+    #     width = console_width - 4
+    # border = width * "-"
+    # title = border + "\n"
+    # title += first_line + "\n"
+    # title += second_line + "\n"
+    # title += third_line + "\n"
+    # title += fourth_line + "\n"
+    # title += "   " + border + "\n"
 
 
     #title = f"Continue from last completed\n    {completed}{incomplete}\n   "

@@ -1,6 +1,7 @@
 import requests
 import json
 import re
+import sys
 
 from rich.console import Console
 from rich.markdown import Markdown
@@ -35,8 +36,11 @@ def generate_streaming(prompt, print_output=True) :
         ],
         "stream": True
     }
-
-    response = requests.post(url, json=payload, stream=True)
+    try:
+        response = requests.post(url, json=payload, stream=True)
+    except:
+        print("There was an error contacting your LLM, maybe the URL is wrong in the config.")
+        sys.exit(1)
 
     output_text = ""
     with Live(Markdown(""), console=console, refresh_per_second=10) as live:
@@ -58,13 +62,17 @@ def generate_streaming(prompt, print_output=True) :
 
             chunk = json.loads(line)
 
-            # deliberately let this throw if its wrong
-            output_text = (
-                response.json()
-                .get("choices", [])[0]
-                .get("message", {})
-                .get("content")
-            )
+
+            try:
+                output_text = (
+                    response.json()
+                    .get("choices", [])[0]
+                    .get("message", {})
+                    .get("content")
+                )
+            except:
+                print("There was an error contacting your LLM, maybe the URL is wrong in the config.")
+                sys.exit(1)
 
             if print_output:
                 converter = LatexNodes2Text()
@@ -94,13 +102,16 @@ def generate_line_by_line(prompt, print_output=True) :
     }
 
     response = requests.post(url, json=payload)
-    #deliberately let this throw if its wrong
-    response_text = (
-        response.json()
-        .get("choices", [])[0]
-        .get("message", {})
-        .get("content")
-    )
+    try:
+        response_text = (
+            response.json()
+            .get("choices", [])[0]
+            .get("message", {})
+            .get("content")
+        )
+    except:
+        print("There was an error contacting your LLM, maybe the URL is wrong in the config.")
+        sys.exit(1)
 
     LATEX_PATTERN = re.compile(
         r"\$\$[\s\S]*?\$\$"
@@ -161,12 +172,16 @@ def generate_toschema(prompt, schema):
             },
         },
     }
-    response = requests.post(url, json=payload)
-    # deliberately let this throw if its wrong
-    response_text = (
-        response.json()
-        .get("choices", [])[0]
-        .get("message", {})
-        .get("content")
-    )
+    try:
+        response = requests.post(url, json=payload)
+        # deliberately let this throw if its wrong
+        response_text = (
+            response.json()
+            .get("choices", [])[0]
+            .get("message", {})
+            .get("content")
+        )
+    except:
+        print("There was an error contacting your LLM, maybe the URL is wrong in the config.")
+        sys.exit(1)
     return response_text
