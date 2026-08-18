@@ -28,17 +28,21 @@ class Unit:
     outcomes: list[str]
     topic_descriptions: list[TopicDescription]
     path: str
+    preferences: str
 
     @property
     def to_string(self):
+        outcomes = "\n\t- " + "\n\t- ".join(self.outcomes)
+        topics = "\n\t- " + "\n\t- ".join([topic.title for topic in self.topic_descriptions])
+
         return f"""
-        Course: {self.course}
-        Course Code: {self.course_code}
-        Unit Name: {self.name}
-        Level: {self.level}
-        Total Duration: {self.total_duration}
-        Outcomes: {self.outcomes}
-        Topics: {self.topic_descriptions}
+Course: {self.course}
+Course Code: {self.course_code}
+Unit Name: {self.name}
+Level: {self.level}
+Total Duration: {self.total_duration}
+Outcomes: {outcomes}        
+Topics: {topics}
         
 """
     @property
@@ -67,9 +71,6 @@ class Unit:
         last_incomplete = min(uncompleted_topics, key=lambda x: x.order)
         ret = [topic for topic in topics if topic.order == last_incomplete.order][0]
         return ret
-
-
-
 
 
     def get_first_topic(self):
@@ -122,7 +123,7 @@ class Unit:
         print(f"Saved unit to {self.path}")
 
     @classmethod
-    def load(cls, unit_file):
+    def load(cls, unit_file) -> Unit | None:
         try:
             with open(unit_file, "r", encoding="utf-8") as file:
                 if str(unit_file).endswith(".yaml"):
@@ -163,14 +164,15 @@ class Unit:
                     total_duration=data["total_duration"],
                     outcomes=data["outcomes"],
                     topic_descriptions=the_topic_descriptions,
-                    path=get_path
+                    path=get_path,
+                    preferences=data["preferences"]
                 )
                 return unit
         except FileNotFoundError:
             print("Error: File not found.")
 
     @classmethod
-    def load_all_units(cls):
+    def load_all_units(cls) -> list[Unit]:
         all_units = []
         curricula_folder = Path(__file__).resolve().parent / "Curricula"
         if not curricula_folder.exists():
@@ -184,6 +186,15 @@ class Unit:
                 for unit_file in unit.glob("*.yaml"):
                     all_units.append(cls.load(unit_file))
         return all_units
+
+    @classmethod
+    def load_unit_from_unit_code(cls,unit_code) -> Unit:
+        units = cls.load_all_units()
+        unit = [unit for unit in units if unit_code == unit.unit_code]
+        if len(unit) == 1:
+            return unit[0]
+        else:
+            raise Exception(f"Unit with code {unit_code} not found or data corrupted. (duplicate unit codes)")
 
 @dataclass
 class Progress:

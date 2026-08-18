@@ -27,19 +27,21 @@ def convo_unit_gen():
     context = ""
     print("Describe the unit you'd like generated in a few sentences."
     "If you'd like include some desired outcomes and topics you'd like included "
-    "and what level of education you're looking for.")
+    "and what level of education you're looking for.\n")
     while True:
         user_desc = input()
         context += user_desc
         #todo make this a progress bar or at least a 3 dots appearing pattern
-        print("Thinking...")
+        print("Generating...")
         prompt = f"""
         Please generate a unit definition according to the schema and the 
-        following user input {user_desc} and context {context}.
+        following user input {user_desc} and context {context}. The topic
+        descriptions should be very brief (titles more than descriptions).
         """
         schema2 = load_json(Path(__file__).parent / "schemas" / "units.json")
         unit = generate_toschema(prompt, schema2)
         unit_json = json.loads(unit)
+        unit_json["preferences"] = ""
         temp_unit_path = Path(__file__).parent / "InputUnits" / "temp.json"
         with open(temp_unit_path,"w") as file:
             json.dump(unit_json,file, indent=4)
@@ -47,11 +49,11 @@ def convo_unit_gen():
         unit = Unit.load(str(temp_unit_path))
         print("Happy with the following?")
         print(unit.to_string)
-        happy = input("Enter /yes to confirm, anything else to try again.")
-        if happy == "/yes":
+        user_reply = input("Enter /confirm to confirm or /nope to continue refining.\n")
+        if user_reply == "/confirm":
             break
-        print("How do you want it changed?")
-
+        else:
+            print("Describe your refinements and we'll fix it up.")
     return unit
 
 
@@ -124,6 +126,18 @@ def get_rag_or_warn(unit_folder, rag_question):
         #option = input("Press Enter to continue or enter q to quit: ")
         #if option == "q" or option == "Q":
         #    exit()
+
+def ask_user_for_unit_preference() -> str:
+    user_pref_raw = input("If you have any preferences about how the unit is taught (eg. don't include chemical"
+                          "formulas for nutrition information), enter them here, if none, just press enter.\n")
+    if user_pref_raw != "":
+        #prompt = f"The user has the following preferences for how this unit is taught. Please summarize and rationalise it to be useful in a preferences prompt to be included with each lesson {user_pref_raw}."
+        #print("Understanding your preferences...")
+        #preference = generate(prompt, False)
+        print("Noted. This will apply to lesson generation for this unit.")
+    else:
+        preference = ""
+    return user_pref_raw
 
 def AddTopicDescriptionsToUnit(unit) -> Unit:
     topic_descriptions = []
@@ -247,21 +261,24 @@ def generate_topic_files(unit):
             unit.unit_code
             )
         topic.save()
-        print(f"Finished defining {topic.title}. {count}/{total} done.")
+        print(f"Finished filling out {topic.title}. {count}/{total} done.")
         order += 1
         count += 1
 
+
 def generate_lesson_content_file(lesson_outline, unit_code, lesson_order):
     print("Generating lesson content for: " + lesson_outline.title)
-    rag_question=f"""
-            {lesson_outline.summary}
-        """
+    # rag_question=f"""
+    #         {lesson_outline.summary}
+    #     """
+    # rag_context = get_rag_or_warn(lesson_outline.unit_folder, rag_question)
 
-    rag_context = get_rag_or_warn(lesson_outline.unit_folder, rag_question)
+    unit = Unit.load_unit_from_unit_code(unit_code)
     prompt = f"""
-Please teach me about {lesson_outline.title} - {lesson_outline.summary}
-Here is some context from the lesson materials that may help inform your answer: {rag_context}
-The references may or may not be relevant. Use only those that directly help answer the question.
+    Please teach me about {lesson_outline.title} - {lesson_outline.summary}. 
+    Do not provide a lesson plan, take the role of the tutor actually teaching the lesson.
+    The student has the following preferences about how they are taught the lesson {unit.preferences}. Follow them as closely
+    as possible unless the meaning being conveyed by the lesson requires they be bent or broken.
 """
     content = generate(prompt,False)
 

@@ -11,6 +11,8 @@ from tutor_init import menu_get_next_lesson, menu_get_unit_continuations, \
 
 from tutor_live_text import stream_panel
 
+from utilities import there_is_a_curricula_folder_with_something_in_it
+
 def main():
 
     config = get_config()
@@ -27,6 +29,27 @@ def main():
     stream_panel("Here you can learn lots of things! Lets Go!","Welcome")
 
     os.system('cls' if os.name == 'nt' else 'clear')
+
+    config = get_config()
+
+    # if not there_is_a_curricula_folder_with_something_in_it:
+    #     print("Looks like this is your first time using Totur.")
+    #     print("Let's go through a few questions to setup.")
+    #     print("First we need to get the address of your AI, please enter the base URL. eg https://home.ai:11434 and the app will call https://home.ai:11434/v1/chat/completions")
+    #     address = input()
+    #
+    #
+    #     while True:
+    #         print("You can use a regular chatGPT subscription for the AI."
+    #               "If you already have codex cli inst")
+    #         chatgpt = input("Would you like to do this? y/n")
+    #         if chatgpt not in ['y','n']:
+    #             continue
+    #         elif chatgpt == 'y':
+    #             config.use_codex = True
+
+
+
 
     menu = Menu()
     menu.add(menu_get_next_lesson())

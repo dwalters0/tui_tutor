@@ -17,8 +17,9 @@ from utilities import print_box,pick_folder,pick_topic,pick_lesson,pick_folder_t
 from configuration import LastCompletedLesson
 
 from gen_teach import teach
-from gen_curriculum import generate_next_lesson, finish_lesson,generate_lesson_content_file, \
-    AddTopicDescriptionsToUnit,generate_topic_files, generate_all_lessons_for_a_topic, convo_unit_gen
+from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_content_file, \
+    AddTopicDescriptionsToUnit, generate_topic_files, generate_all_lessons_for_a_topic, convo_unit_gen, \
+    ask_user_for_unit_preference
 
 from tutor_live_text import stream_panel
 
@@ -247,6 +248,9 @@ def run_create_unit():
     options = ("Generate conversationally","Upload yaml file")
     choice = pick_from_list(options,"Create unit")
     unit = None
+
+    os.system('cls' if os.name == 'nt' else 'clear')
+
     if choice == "Generate conversationally":
         unit = convo_unit_gen()
         unit.save()
@@ -256,11 +260,13 @@ def run_create_unit():
         unit = Unit.load(unit_path)
 
     if unit:
-        print("Working on the topic outlines.")
+        preference = ask_user_for_unit_preference()
+        print("Working on the topic outlines (Process 1 of 2).")
         unit = AddTopicDescriptionsToUnit(unit)
-
+        unit.preferences = preference
+        unit.save()
         # generates topic files to populate the topics folder
-        print("Now we're really generating the topics.")
+        print("Now we're really generating the topics. (Process 2 of 2).")
         generate_topic_files(unit)
     else:
         raise Exception("No unit generated, something went wrong.")

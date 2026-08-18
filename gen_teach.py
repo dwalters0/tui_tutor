@@ -9,6 +9,10 @@ from utilities import normalise_filename
 from utilities import print_box
 from utilities import print_like_it_were_just_genned
 
+from gen_curriculum import ask_user_for_unit_preference
+from tutor_classes import Unit
+
+
 from pathlib import Path
 
 #TODO This is pasted from gen_curriculum, put this function somewhere better
@@ -32,12 +36,18 @@ def teach(lesson):
     history += lesson.content
     history += "###END LESSON CONTENT###"
     print_like_it_were_just_genned(lesson.content)
-    print_box("You can now ask questions. Enter \"c\" to continue with lessons.")
+    print_box("You can now ask questions. Enter \"/c\" to continue with lessons.")
 
 
     while True:
         question = input()
-        if question.strip().lower() == "c":
+        if question.strip().lower() == "/preferences":
+            new_preference = ask_user_for_unit_preference()
+            unit = Unit.load_unit_from_unit_code(lesson.unit_code)
+            unit.preferences += new_preference
+            unit.save()
+            continue
+        if question.strip().lower() == "/c":
             break
         elif question.strip() == "":
             continue
