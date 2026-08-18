@@ -23,23 +23,44 @@ console = Console()
 def generate_streaming(prompt, print_output=True) :
     config = get_config()
     url = config.openapi_api_url
+    headers = {}
+    payload = ""
+    # header|body
+    if config.openapi_auth_type == "header":
+        payload = {
+            "model": config.openapi_api_model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            "stream": True
+        }
+        headers = {'Authorization': 'Bearer {}'.format(config.openapi_api_key),
+                   'Content-Type': 'application/json',
+                   'Accept': 'application/json'}
 
-    #add "keep_alive" : "10m" to keep the model warm between prompts
-    payload = {
-        "model": config.openapi_api_model,
-        "api_key": config.openapi_api_key,
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
-        "stream": True
-    }
+
+    elif config.openapi_auth_type == "body":
+        payload = {
+            "model": config.openapi_api_model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            "api_key": config.openapi_api_key,
+            "stream": True
+        }
+        headers = {'Content-Type': 'application/json',
+                   'Accept': 'application/json'}
     try:
-        response = requests.post(url, json=payload, stream=True)
-    except:
+        response = requests.post(url, json=payload,headers=headers, stream=True)
+    except Exception as e:
         print("There was an error contacting your LLM, maybe the URL is wrong in the config.")
+        print(e)
         sys.exit(1)
 
     output_text = ""
@@ -88,20 +109,41 @@ def generate_streaming(prompt, print_output=True) :
 def generate_line_by_line(prompt, print_output=True) :
     config = get_config()
     url = config.openapi_api_url
-    #add "keep_alive" : "10m" to keep the model warm between prompts
-    payload = {
-        "model": config.openapi_api_model,
-        "messages": [
-            {
-                "role": "user",
-                "content": prompt,
-            }
-        ],
-        "api_key": config.openapi_api_key,
-        "stream": False
-    }
+    headers = {}
+    payload = ""
+    #header|body
+    if config.openapi_auth_type == "header":
+        payload = {
+            "model": config.openapi_api_model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            "temperature": 0.2,
+            "top_p": 0.7,
+            "frequency_penalty": 0,
+            "presence_penalty": 0,
+            "max_tokens": 1024,
+            "stream": False
+        }
+        headers = {'Authorization': 'Bearer {}'.format(config.openapi_api_key)}
 
-    response = requests.post(url, json=payload)
+    elif config.openapi_auth_type == "body":
+        payload = {
+            "model": config.openapi_api_model,
+            "messages": [
+                {
+                    "role": "user",
+                    "content": prompt,
+                }
+            ],
+            "api_key": config.openapi_api_key,
+            "stream": False
+        }
+
+    response = requests.post(url, json=payload, headers=headers)
     try:
         response_text = (
             response.json()
@@ -109,8 +151,9 @@ def generate_line_by_line(prompt, print_output=True) :
             .get("message", {})
             .get("content")
         )
-    except:
+    except Exception as e:
         print("There was an error contacting your LLM, maybe the URL is wrong in the config.")
+        print(e)
         sys.exit(1)
 
     LATEX_PATTERN = re.compile(
@@ -142,9 +185,9 @@ def generate(prompt, print_output=True) :
     if config.use_codex == True:
         return codex_generate(prompt, print_output)
     if config.openapi_api_output_mode == "line_by_line":
-        return generate_line_by_line(prompt, print_output)
+       return generate_line_by_line(prompt, print_output)
     elif config.openapi_api_output_mode == "streaming":
-        return generate_streaming(prompt, print_output)
+       return generate_streaming(prompt, True)
 
 def generate_toschema(prompt, schema):
     config = get_config()

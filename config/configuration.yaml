@@ -4,15 +4,22 @@ codex:
   codex_executable_path: /root/.local/bin/codex
 
 openapi_api:
-    #eg. http://localhost:11434/v1/chat/completions
+  #eg. http://localhost:11434/v1/chat/completions
+  #url: https://integrate.api.nvidia.com/v1/chat/completions
   url: http://pc.dan:11434/v1/chat/completions
-    #eg. gemma4:e2b
+  #eg. gemma4:e2b
+  #model: z-ai/glm-5.2
   model: gemma4:e2b
-    #API key
-  authorization: none
-  #streaming kind of works and only for chat
-  # line_by_line or streaming
+  #API key
+  #authorization: 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
+  authorization: blah
+  #some providers (eg. nvidia) want the api key in an authorization header bearer token
+  #others want it in the body as api_key
+  #choose which to do header|body
+  auth_type: body
+
   output_mode: line_by_line
+
 
 rag:
   model: embeddinggemma

@@ -17,6 +17,7 @@ class Config:
     openapi_api_url: str
     openapi_api_model: str
     openapi_api_key: str
+    openapi_auth_type: str
     openapi_api_output_mode: str
     rag_model: str
     rag_embedding_url: str
@@ -42,6 +43,7 @@ class Config:
             openapi_api_url = data["openapi_api"]["url"],
             openapi_api_model= data["openapi_api"]["model"],
             openapi_api_key= data["openapi_api"]["authorization"],
+            openapi_auth_type= data["openapi_api"]["auth_type"],
             openapi_api_output_mode = data["openapi_api"]["output_mode"],
             rag_model= data["rag"]["model"],
             rag_embedding_url= data["rag_embedding"]["url"],
@@ -52,6 +54,7 @@ class Config:
             rag_retrieval_authorization= data["rag_retrieval"]["authorization"],
             use_codex=data["codex"]["use_codex"],
             codex_executable_path=data["codex"]["codex_executable_path"],
+
 
         )
         return config

@@ -1,0 +1,46 @@
+{
+    "type": "object",
+    "properties": {
+        "course": {
+            "type": "string"
+        },
+        "course_code": {
+            "type": "string"
+        },
+        "name": {
+            "type": "string"
+        },
+        "unit_code": {
+            "type": "string"
+        },
+        "level": {
+            "type": "string"
+        },
+        "total_duration": {
+            "type": "string"
+        },
+        "outcomes": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "topic_descriptions": {
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        }
+    },
+    "required": [
+        "course",
+        "course_code",
+        "name",
+        "unit_code",
+        "level",
+        "total_duration",
+        "outcomes",
+        "topic_descriptions"
+    ],
+    "additionalProperties": false
+}

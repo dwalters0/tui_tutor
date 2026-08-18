@@ -18,7 +18,7 @@ from configuration import LastCompletedLesson
 
 from gen_teach import teach
 from gen_curriculum import generate_next_lesson, finish_lesson,generate_lesson_content_file, \
-    AddTopicDescriptionsToUnit,generate_topic_files, generate_all_lessons_for_a_topic
+    AddTopicDescriptionsToUnit,generate_topic_files, generate_all_lessons_for_a_topic, convo_unit_gen
 
 from tutor_live_text import stream_panel
 
@@ -34,7 +34,6 @@ class Menu:
     def show_and_select(self):
         stream_panel("## Welcome to TUI Tutor","Menu")
         print("\n")
-        #print(f"\n{title}\n" + "-" * len(title))
 
         for i, item in enumerate(self.menu_items):
             print(f"{i}: {item.title}")
@@ -56,7 +55,6 @@ class Menu:
             self.menu_items.append(item)
         elif type(item) == list:
             self.menu_items.extend(item)
-
 
 def run_menu_get_next_lesson(next_lesson, next_topic, chosen_lesson_outline):
     if not next_lesson:
@@ -81,11 +79,8 @@ def menu_get_next_lesson() -> MenuItem | None:
 
     last_lesson_outline = LessonOutline.get_lesson_outline_by_id(last_lesson.outline_id)
 
-    title = ""
-
     if last_lesson_outline.complete:
         next_lesson_order = last_lesson.order + 1
-
 
         if next_lesson_order <= len(last_topic.lesson_outlines) - 1:
             current_topic = last_topic
@@ -109,7 +104,6 @@ def menu_get_next_lesson() -> MenuItem | None:
         current_topic = last_topic
         chosen_lesson_outline = current_topic.lesson_outlines[last_lesson.order]
 
-
     first = f"Continue from last lesson:"
     second = f"{current_topic.unit_code}, {current_topic.title}"
     third =  f"{chosen_lesson_outline.title}"
@@ -123,35 +117,8 @@ def menu_get_next_lesson() -> MenuItem | None:
         lines = (max_detail+4) * "-"
     else:
         lines = console.width * "-"
-
-
     title = first+"\n"+lines+"\n"+second+"\n"+third+"\n"+lines
 
-
-
-    # completed = "■" * current_topic.progress.Completed
-    # incomplete = "□" * (current_topic.progress.Total - current_topic.progress.Completed)
-    #
-    # topic_completion = current_topic.progress.Completed / current_topic.progress.Total * 100
-    # first_line = f"   Continue from last completed"
-    # second_line = f"   {current_topic.unit_code} Topic {current_topic.order + 1}:{current_topic.title}"
-    # third_line = f"   Lesson {chosen_lesson_outline.order + 1} {chosen_lesson_outline.title}"
-    # fourth_line = f"   Topic completion: {topic_completion:.2f}%."
-    # console_width = console.width
-    # if len(first_line) < console_width and len(second_line) < console_width - 4:
-    #     width = max(len(first_line), len(second_line)) + 4
-    # else:
-    #     width = console_width - 4
-    # border = width * "-"
-    # title = border + "\n"
-    # title += first_line + "\n"
-    # title += second_line + "\n"
-    # title += third_line + "\n"
-    # title += fourth_line + "\n"
-    # title += "   " + border + "\n"
-
-
-    #title = f"Continue from last completed\n    {completed}{incomplete}\n   "
     callable_partial = partial(run_menu_get_next_lesson, next_lesson, current_topic,chosen_lesson_outline)
     return MenuItem(title,callable_partial)
 
@@ -271,25 +238,69 @@ def run_select_any_lesson():
 
     finish_lesson(chosen_lesson_outline,topic,lesson)
 
-def menu_get_generate_unit_files() -> MenuItem:
+def menu_get_create_unit():
     title = "Create unit"
-    callable_partial = partial(run_generate_unit_files)
+    callable_partial = partial(run_create_unit)
     return MenuItem(title, callable_partial)
 
-def run_generate_unit_files():
-    unit_path = pick_only_file(Path(__file__).parent / "InputUnits")
-    print("\nSelected file:")
-    #print(unit_path)
+def run_create_unit():
+    options = ("Generate conversationally","Upload yaml file")
+    choice = pick_from_list(options,"Create unit")
+    unit = None
+    if choice == "Generate conversationally":
+        unit = convo_unit_gen()
+        unit.save()
+    elif choice == "Upload yaml file":
+        unit_path = pick_only_file(Path(__file__).parent / "InputUnits")
+        print("\nSelected file:")
+        unit = Unit.load(unit_path)
 
-    #load the original user input yaml file
-    unit = Unit.load(unit_path)
-    #copies the input yaml file and adds topic_descriptions to it for each topic
-    print("Working on the topic outlines.")
-    unit = AddTopicDescriptionsToUnit(unit)
+    if unit:
+        print("Working on the topic outlines.")
+        unit = AddTopicDescriptionsToUnit(unit)
 
-    #generates topic files to populate the topics folder
-    print("Now we're really generating the topics.")
-    generate_topic_files(unit)
+        # generates topic files to populate the topics folder
+        print("Now we're really generating the topics.")
+        generate_topic_files(unit)
+    else:
+        raise Exception("No unit generated, something went wrong.")
+
+
+# def menu_get_create_unit_conversationally() -> MenuItem:
+#     title = "Create Unit Conversationally"
+#     callable_partial = partial(run_get_create_unit_conversationally)
+#     return MenuItem(title,callable_partial)
+#
+# def run_get_create_unit_conversationally():
+#     unit = convo_unit_gen()
+#     unit.save()
+#     print("Working on the topic outlines.")
+#     unit = AddTopicDescriptionsToUnit(unit)
+#
+#     # generates topic files to populate the topics folder
+#     print("Now we're really generating the topics.")
+#     generate_topic_files(unit)
+#
+#
+# def menu_get_generate_unit_files_from_yaml() -> MenuItem:
+#     title = "Create unit"
+#     callable_partial = partial(run_generate_unit_files_from_yaml)
+#     return MenuItem(title, callable_partial)
+#
+# def run_generate_unit_files_from_yaml():
+#     unit_path = pick_only_file(Path(__file__).parent / "InputUnits")
+#     print("\nSelected file:")
+#     #print(unit_path)
+#
+#     #load the original user input yaml file
+#     unit = Unit.load(unit_path)
+#     #copies the input yaml file and adds topic_descriptions to it for each topic
+#     print("Working on the topic outlines.")
+#     unit = AddTopicDescriptionsToUnit(unit)
+#
+#     #generates topic files to populate the topics folder
+#     print("Now we're really generating the topics.")
+#     generate_topic_files(unit)
 
 def menu_get_exit() -> MenuItem:
     title = "Exit"
@@ -328,3 +339,4 @@ def run_generate_lessons():
             print(f"Generating Topic {topic.order + 1} {topic.title}")
             generate_all_lessons_for_a_topic(topic)
 
+1

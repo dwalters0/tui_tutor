@@ -23,10 +23,44 @@ from configuration import save_progress
 import os
 from pathlib import Path
 
+def convo_unit_gen():
+    context = ""
+    print("Describe the unit you'd like generated in a few sentences."
+    "If you'd like include some desired outcomes and topics you'd like included "
+    "and what level of education you're looking for.")
+    while True:
+        user_desc = input()
+        context += user_desc
+        #todo make this a progress bar or at least a 3 dots appearing pattern
+        print("Thinking...")
+        prompt = f"""
+        Please generate a unit definition according to the schema and the 
+        following user input {user_desc} and context {context}.
+        """
+        schema2 = load_json(Path(__file__).parent / "schemas" / "units.json")
+        unit = generate_toschema(prompt, schema2)
+        unit_json = json.loads(unit)
+        temp_unit_path = Path(__file__).parent / "InputUnits" / "temp.json"
+        with open(temp_unit_path,"w") as file:
+            json.dump(unit_json,file, indent=4)
+        context += unit
+        unit = Unit.load(str(temp_unit_path))
+        print("Happy with the following?")
+        print(unit.to_string)
+        happy = input("Enter /yes to confirm, anything else to try again.")
+        if happy == "/yes":
+            break
+        print("How do you want it changed?")
+
+    return unit
+
+
+
 def generate_next_lesson(current_topic, chosen_lesson_outline):
     new_lesson = None
     if not chosen_lesson_outline.generated:
         new_lesson = generate_lesson_content_file(chosen_lesson_outline, current_topic.unit_code, chosen_lesson_outline.order)
+        #r1
         for lesson in current_topic.lesson_outlines:
             if lesson.id == chosen_lesson_outline.id:
                 lesson.generated = True
@@ -38,6 +72,7 @@ def finish_lesson(chosen_lesson_outline, topic, lesson):
     save = input("Mark as complete? [Y/n]")
     if save.lower() != "n":
         chosen_lesson_outline.complete = True
+        #r1
         for topic_lesson in topic.lesson_outlines:
             if topic_lesson.id == lesson.outline_id:
                 topic_lesson.complete = True

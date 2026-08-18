@@ -29,8 +29,18 @@ class Unit:
     topic_descriptions: list[TopicDescription]
     path: str
 
-
-
+    @property
+    def to_string(self):
+        return f"""
+        Course: {self.course}
+        Course Code: {self.course_code}
+        Unit Name: {self.name}
+        Level: {self.level}
+        Total Duration: {self.total_duration}
+        Outcomes: {self.outcomes}
+        Topics: {self.topic_descriptions}
+        
+"""
     @property
     def unit_folder(self):
         return str(Path(__file__).parent / "Curricula" / f"{self.course_code}" / f"{self.unit_code}")
@@ -115,7 +125,12 @@ class Unit:
     def load(cls, unit_file):
         try:
             with open(unit_file, "r", encoding="utf-8") as file:
-                data = yaml.safe_load(file)
+                if str(unit_file).endswith(".yaml"):
+                    data = yaml.safe_load(file)
+                elif str(unit_file).endswith(".json"):
+                    data = json.load(file)
+                else:
+                    raise Exception(f"Unsupported file format: {unit_file}")
                 if data.get("path"):
                     get_path = data["path"]
                 else:
