@@ -6,7 +6,7 @@ from configuration import get_config
 from tutor_codex import auth_codex
 
 from tutor_init import menu_get_next_lesson, menu_get_unit_continuations, \
-    menu_get_progress_report, menu_get_select_any_lesson, menu_get_generate_unit_files_from_yaml, \
+    menu_get_progress_report, menu_get_select_any_lesson, \
     menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu
 
 from tutor_live_text import stream_panel
