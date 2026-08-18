@@ -19,13 +19,13 @@ class Config:
     openapi_api_key: str
     openapi_auth_type: str
     openapi_api_output_mode: str
-    rag_model: str
-    rag_embedding_url: str
-    rag_embedding_authorization: str
-    rag_embedding_chunk_size: int
-    rag_embedding_overlap: int
-    rag_retrieval_url: str
-    rag_retrieval_authorization: str
+    # rag_model: str
+    # rag_embedding_url: str
+    # rag_embedding_authorization: str
+    # rag_embedding_chunk_size: int
+    # rag_embedding_overlap: int
+    # rag_retrieval_url: str
+    # rag_retrieval_authorization: str
     use_codex: bool
     codex_executable_path : str
 
@@ -45,13 +45,13 @@ class Config:
             openapi_api_key= data["openapi_api"]["authorization"],
             openapi_auth_type= data["openapi_api"]["auth_type"],
             openapi_api_output_mode = data["openapi_api"]["output_mode"],
-            rag_model= data["rag"]["model"],
-            rag_embedding_url= data["rag_embedding"]["url"],
-            rag_embedding_authorization =data["rag_embedding"]["authorization"],
-            rag_embedding_chunk_size= data["rag_embedding"]["chunk_size"],
-            rag_embedding_overlap= data["rag_embedding"]["overlap"],
-            rag_retrieval_url= data["rag_retrieval"]["url"],
-            rag_retrieval_authorization= data["rag_retrieval"]["authorization"],
+            # rag_model= data["rag"]["model"],
+            # rag_embedding_url= data["rag_embedding"]["url"],
+            # rag_embedding_authorization =data["rag_embedding"]["authorization"],
+            # rag_embedding_chunk_size= data["rag_embedding"]["chunk_size"],
+            # rag_embedding_overlap= data["rag_embedding"]["overlap"],
+            # rag_retrieval_url= data["rag_retrieval"]["url"],
+            # rag_retrieval_authorization= data["rag_retrieval"]["authorization"],
             use_codex=data["codex"]["use_codex"],
             codex_executable_path=data["codex"]["codex_executable_path"],
 
