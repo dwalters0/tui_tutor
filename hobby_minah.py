@@ -3,13 +3,13 @@ import os
 from pathlib import Path
 
 from configuration import get_config
-from frog_codex import auth_codex
+from minah_codex import auth_codex
 
-from frog_init import menu_get_next_lesson, menu_get_unit_continuations, \
+from minah_init import menu_get_next_lesson, menu_get_unit_continuations, \
     menu_get_progress_report, menu_get_select_any_lesson, \
     menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu
 
-from frog_live_text import stream_panel
+from minah_live_text import stream_panel
 
 from utilities import there_is_a_curricula_folder_with_something_in_it
 
@@ -24,18 +24,6 @@ def main():
 
     os.system('cls' if os.name == 'nt' else 'clear')
 
-    logo = r"""
-            @..@
-           (----)
-          ( >__< )
-          ^^ ~~ ^^
-
-        HOBBY FROG
-      Jump into a hobby.
-    """
-
-    print("\033[92m" + logo + "\033[0m")
-
     stream_panel("Welcome","Welcome")
     stream_panel("Here you can learn lots of things! Lets Go!","Welcome")
 
@@ -44,7 +32,7 @@ def main():
     config = get_config()
 
     # if not there_is_a_curricula_folder_with_something_in_it:
-    #     print("Looks like this is your first time using Totur.")
+    #     print("Looks like this is your first time using Hobby Frog.")
     #     print("Let's go through a few questions to setup.")
     #     print("First we need to get the address of your AI, please enter the base URL. eg https://home.ai:11434 and the app will call https://home.ai:11434/v1/chat/completions")
     #     address = input()
