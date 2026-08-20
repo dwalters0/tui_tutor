@@ -10,3 +10,4 @@ Curricula/
 config/progress.yaml
 .DS_Store
 localdeploy.sh
+testdeploy.sh

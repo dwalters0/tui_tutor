@@ -84,8 +84,13 @@ def menu_get_next_lesson() -> MenuItem | None:
     last_lesson_ref = LastCompletedLesson.load()
     if not last_lesson_ref:
         return None
-    last_lesson = Lesson.load(last_lesson_ref.lesson_path)
-    last_topic = Topic.load(last_lesson_ref.topic_path)
+
+    if Path(last_lesson_ref.lesson_path).exists():
+        last_lesson = Lesson.load(last_lesson_ref.lesson_path)
+        last_topic = Topic.load(last_lesson_ref.topic_path)
+    else:
+        last_lesson = None
+        last_topic = None
     if not last_lesson or not last_topic:
         return None
 
