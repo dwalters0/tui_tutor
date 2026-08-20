@@ -2,20 +2,20 @@ import yaml
 import json
 import uuid
 
-from tutor_llm import generate
-from tutor_llm import generate_toschema
+from frog_llm import generate
+from frog_llm import generate_toschema
 
-from tutor_rag import get_rag_context
-from tutor_rag import convert_pdf_to_text
-from tutor_rag import create_rag_storage
+from frog_rag import get_rag_context
+from frog_rag import convert_pdf_to_text
+from frog_rag import create_rag_storage
 
 from utilities import print_box
 from utilities import load_json
 
-from tutor_classes import TopicDescription, Unit, Topic, Lesson
-from tutor_classes import LessonOutline
-from tutor_classes import Topic
-from tutor_classes import Lesson
+from frog_classes import TopicDescription, Unit, Topic, Lesson
+from frog_classes import LessonOutline
+from frog_classes import Topic
+from frog_classes import Lesson
 
 from configuration import LastCompletedLesson
 from configuration import save_progress

@@ -1,7 +1,7 @@
 import json
 from utilities import load_json
 
-from tutor_llm import generate_toschema
+from frog_llm import generate_toschema
 
 
 

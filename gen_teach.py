@@ -1,16 +1,16 @@
 import json
 
-from tutor_llm import generate
-from tutor_llm import generate_toschema
+from frog_llm import generate
+from frog_llm import generate_toschema
 
-from tutor_rag import get_rag_context
+from frog_rag import get_rag_context
 
 from utilities import normalise_filename
 from utilities import print_box
 from utilities import print_like_it_were_just_genned
 
 from gen_curriculum import ask_user_for_unit_preference
-from tutor_classes import Unit
+from frog_classes import Unit
 
 
 from pathlib import Path

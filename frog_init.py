@@ -9,7 +9,7 @@ from rich.console import Console
 from rich.table import Table
 console = Console()
 
-from tutor_classes import Lesson, Topic, LessonOutline, Unit
+from frog_classes import Lesson, Topic, LessonOutline, Unit
 
 from utilities import print_box,pick_folder,pick_topic,pick_lesson,pick_folder_title, \
     pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it
@@ -21,7 +21,7 @@ from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_
     AddTopicDescriptionsToUnit, generate_topic_files, generate_all_lessons_for_a_topic, convo_unit_gen, \
     ask_user_for_unit_preference
 
-from tutor_live_text import stream_panel
+from frog_live_text import stream_panel
 
 @dataclass
 class MenuItem:
@@ -33,7 +33,18 @@ class Menu:
     menu_items: list[MenuItem] = field(default_factory=list[MenuItem])
 
     def show_and_select(self):
-        stream_panel("## Welcome to TUI Tutor","Menu")
+        logo = r"""
+                @..@
+               (----)
+              ( >__< )
+              ^^ ~~ ^^
+
+            HOBBY FROG
+          Jump into a hobby.
+        """
+
+        print("\033[92m" + logo + "\033[0m")
+        stream_panel("## Welcome to Hobby Frog", "Menu")
         print("\n")
 
         for i, item in enumerate(self.menu_items):
