@@ -34,18 +34,20 @@ class Menu:
 
     def show_and_select(self):
         logo = r"""
-                @..@
-               (----)
-              ( >__< )
-              ^^ ~~ ^^
-
-            HOBBY FROG
-          Jump into a hobby.
+   .-'--`.
+  / o     >
+ |    /| /
+ |   / |/
+ |     |
+  \   /
+   \_/
+   / \
+  ^^ ^^
+            HOBBY MINAH
+          Play in your interests.
         """
 
-        print("\033[92m" + logo + "\033[0m")
-        stream_panel("## Welcome to Hobby Frog", "Menu")
-        print("\n")
+        print("\033[38;5;240m" + logo + "\033[0m")
 
         for i, item in enumerate(self.menu_items):
             print(f"{i}: {item.title}")
