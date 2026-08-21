@@ -71,7 +71,7 @@ def convert_latex_in_markdown(text: str) -> str:
 
     return LATEX_PATTERN.sub(replace_match, text)
 
-def print_like_it_were_just_genned(content):
+def run_output_through_latex_and_markdown_rendering(content):
     content = convert_latex_in_markdown(content)
     chunks = content.split("\n\n")
     for chunk in chunks:

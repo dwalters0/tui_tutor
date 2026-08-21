@@ -7,7 +7,7 @@ from minah_rag import get_rag_context
 
 from utilities import normalise_filename
 from utilities import print_box
-from utilities import print_like_it_were_just_genned
+from utilities import run_output_through_latex_and_markdown_rendering
 
 from gen_curriculum import ask_user_for_unit_preference
 from minah_classes import Unit
@@ -35,7 +35,7 @@ def teach(lesson):
     history = "###LESSON CONTENT###"
     history += lesson.content
     history += "###END LESSON CONTENT###"
-    print_like_it_were_just_genned(lesson.content)
+    run_output_through_latex_and_markdown_rendering(lesson.content)
     print_box("You can now ask questions. Enter \"/c\" to continue with lessons.")
 
 
@@ -74,7 +74,8 @@ def teach(lesson):
         # The student has asked the following question {question}.
         # Please answer as a teacher.
         # """
-        answer = generate(prompt)
+
+        answer = run_output_through_latex_and_markdown_rendering(generate(prompt, False))
         history += f"""###LLM ANSWER###
         {answer}
         ###END LLM ANSWER###"""      
