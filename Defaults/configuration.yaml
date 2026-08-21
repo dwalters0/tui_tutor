@@ -1,7 +1,7 @@
 
 codex:
   use_codex: false
-  codex_executable_path: /root/.local/bin/codex
+  codex_executable_path: /hobbyist/.local/bin/codex
 
 openapi_api:
     #eg. http://localhost:11434/v1/chat/completions
