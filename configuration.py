@@ -29,6 +29,14 @@ class Config:
     use_codex: bool
     codex_executable_path : str
 
+    def save(self):
+        config_file = Path(__file__).parent / "config" / "configuration.yaml"
+        try:
+            with open(config_file, "w", encoding="utf-8") as file:
+                yaml.safe_dump(asdict(self), file)
+        except FileNotFoundError:
+            print("Configuration file not found")
+
     @classmethod
     def load(cls):
         config_file = Path(__file__).parent / "config" / "configuration.yaml"
@@ -40,11 +48,11 @@ class Config:
             exit(1)
     # try:
         config = cls(
-            openapi_api_url = data["openapi_api"]["url"],
-            openapi_api_model= data["openapi_api"]["model"],
-            openapi_api_key= data["openapi_api"]["authorization"],
-            openapi_auth_type= data["openapi_api"]["auth_type"],
-            openapi_api_output_mode = data["openapi_api"]["output_mode"],
+            openapi_api_url = data["openapi_api_url"],
+            openapi_api_model= data["openapi_api_model"],
+            openapi_api_key= data["openapi_api_key"],
+            openapi_auth_type= data["openapi_auth_type"],
+            openapi_api_output_mode = data["openapi_api_output_mode"],
             # rag_model= data["rag"]["model"],
             # rag_embedding_url= data["rag_embedding"]["url"],
             # rag_embedding_authorization =data["rag_embedding"]["authorization"],
@@ -52,8 +60,8 @@ class Config:
             # rag_embedding_overlap= data["rag_embedding"]["overlap"],
             # rag_retrieval_url= data["rag_retrieval"]["url"],
             # rag_retrieval_authorization= data["rag_retrieval"]["authorization"],
-            use_codex=data["codex"]["use_codex"],
-            codex_executable_path=data["codex"]["codex_executable_path"],
+            use_codex=data["use_codex"],
+            codex_executable_path=data["codex_executable_path"],
 
 
         )
@@ -92,4 +100,5 @@ def save_progress(progress_save: LastCompletedLesson):
     progress_save_path = Path(__file__).resolve().parent / "config" / "progress.yaml"
     with open(progress_save_path, "w") as f:
         yaml.safe_dump(asdict(progress_save), f)
+
 

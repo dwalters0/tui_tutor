@@ -7,7 +7,8 @@ from minah_codex import auth_codex
 
 from minah_init import menu_get_next_lesson, menu_get_unit_continuations, \
     menu_get_progress_report, menu_get_select_any_lesson, \
-    menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu
+    menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu, run_menu_get_configure, \
+    run_menu_get_configure
 
 from minah_live_text import stream_panel
 
@@ -59,6 +60,7 @@ def main():
     #menu.add(menu_get_create_unit_conversationally())
     menu.add(menu_get_create_unit())
     menu.add(menu_get_generate_lessons())
+    menu.add(run_menu_get_configure())
     menu.add(menu_get_exit())
 
     selected = menu.show_and_select()

@@ -1,40 +1,7 @@
-
-codex:
-  use_codex: false
-  codex_executable_path: /root/.local/bin/codex
-
-openapi_api:
-  #eg. http://localhost:11434/v1/chat/completions
-  #url: https://integrate.api.nvidia.com/v1/chat/completions
-  url: http://pc.dan:11434/v1/chat/completions
-  #eg. gemma4:e2b
-  #model: z-ai/glm-5.2
-  model: gemma4:e2b
-  #API key
-  #authorization: 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
-  authorization: blah
-  #some providers (eg. nvidia) want the api key in an authorization header bearer token
-  #others want it in the body as api_key
-  #choose which to do header|body
-  auth_type: body
-
-  output_mode: line_by_line
-
-
-rag:
-  model: embeddinggemma
-
-rag_embedding:
-  url: http://localhost:11434/v1
-  authorization: none
-  chunk_size: 128
-  overlap: 64
-
-rag_retrieval:
-    #When using local inference, might be good to point this at an inference engine without
-    #gpu access.
-      # PRO: it uses CPU, leaving VRAM for the LLM. Retrieval is fast anyway.
-      # CON: loading to RAM instead of VRAM might be a little bit slower.
-  url: http://localhost:11434/v1
-  authorization: none
-
+codex_executable_path: /root/.local/bin/codex
+openapi_api_key: newkey
+openapi_api_model: gemma4:e2b
+openapi_api_output_mode: line_by_line
+openapi_api_url: http://pc.dan:11434/v1/chat/completions
+openapi_auth_type: body
+use_codex: False

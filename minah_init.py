@@ -14,7 +14,7 @@ from minah_classes import Lesson, Topic, LessonOutline, Unit
 from utilities import print_box,pick_folder,pick_topic,pick_lesson,pick_folder_title, \
     pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it
 
-from configuration import LastCompletedLesson
+from configuration import LastCompletedLesson, get_config
 
 from gen_teach import teach
 from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_content_file, \
@@ -47,7 +47,7 @@ class Menu:
           Play in your interests.
         """
 
-        print("\033[38;5;240m" + logo + "\033[0m")
+        print("\033[32m" + logo + "\033[0m")
 
         for i, item in enumerate(self.menu_items):
             print(f"{i}: {item.title}")
@@ -69,6 +69,25 @@ class Menu:
             self.menu_items.append(item)
         elif type(item) == list:
             self.menu_items.extend(item)
+
+def run_configure():
+    while True:
+        print("Configuration Menu")
+        config=get_config()
+        config_options = attrs = list((vars(config).items()))
+        config_options.append(("Return to main menu",None))
+        choice = pick_from_list(config_options,"Select configuration to update")
+        print(choice[0])
+        if choice[0] == "Return to main menu":
+            break
+        new_val = input("Enter the new value.")
+        setattr(config, choice[0], new_val)
+        config.save()
+
+def run_menu_get_configure():
+    title = "Configuration options"
+    callable_partial =  partial(run_configure)
+    return MenuItem(title,callable_partial)
 
 def run_menu_get_next_lesson(next_lesson, next_topic, chosen_lesson_outline):
     if not next_lesson:
