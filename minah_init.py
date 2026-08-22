@@ -96,8 +96,9 @@ def run_menu_get_next_lesson(next_lesson, next_topic, chosen_lesson_outline):
         next_lesson = generate_next_lesson(next_topic, chosen_lesson_outline)
     print_box(
         f"Topic {next_topic.order + 1}: {next_topic.title}\n{next_lesson.title}")
-    teach(next_lesson)
-    finish_lesson(chosen_lesson_outline, next_topic, next_lesson)
+    end_lesson = teach(next_lesson)
+    if end_lesson:
+        finish_lesson(chosen_lesson_outline, next_topic, next_lesson)
 
 def menu_get_next_lesson() -> MenuItem | None:
     if not there_is_a_curricula_folder_with_something_in_it():
@@ -203,8 +204,9 @@ def run_menu_get_unit_continuations(next_topic,chosen_lesson_outline):
 
     print_box(
         f"Topic {next_topic.order + 1}: {next_topic.title}\n{next_lesson.title}")
-    teach(next_lesson)
-    finish_lesson(chosen_lesson_outline, next_topic, next_lesson)
+    end_lesson = teach(next_lesson)
+    if end_lesson:
+        finish_lesson(chosen_lesson_outline, next_topic, next_lesson)
 
 def menu_get_progress_report() -> MenuItem | None:
     if not there_is_a_curricula_folder_with_something_in_it():
@@ -272,9 +274,9 @@ def run_select_any_lesson():
     lesson = Lesson.load(Path(unit_path) / "lessons" / f"{chosen_lesson_outline.id}.yaml")
     print_box(
         f"Topic {topic.order + 1}: {topic.title}\n{lesson.title}")
-    teach(lesson)
-
-    finish_lesson(chosen_lesson_outline,topic,lesson)
+    end_lesson = teach(lesson)
+    if end_lesson:
+        finish_lesson(chosen_lesson_outline,topic,lesson)
 
 def menu_get_create_unit():
     title = "Create unit"

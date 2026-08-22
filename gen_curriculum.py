@@ -265,6 +265,14 @@ def generate_topic_files(unit):
         order += 1
         count += 1
 
+def regenerate_lesson_content_file(lesson):
+    unit_code = lesson.unit_code
+    lesson_order = lesson.order
+    lesson_outline = LessonOutline.get_lesson_outline_by_id(lesson.outline_id)
+    generate_lesson_content_file(lesson_outline, unit_code, lesson_order)
+    print("Lesson overwritten.")
+
+
 
 def generate_lesson_content_file(lesson_outline, unit_code, lesson_order):
     print("Generating lesson content for: " + lesson_outline.title)
