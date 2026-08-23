@@ -279,13 +279,13 @@ def run_select_any_lesson():
         finish_lesson(chosen_lesson_outline,topic,lesson)
 
 def menu_get_create_unit():
-    title = "Create unit"
+    title = "Dig into something new"
     callable_partial = partial(run_create_unit)
     return MenuItem(title, callable_partial)
 
 def run_create_unit():
     options = ("Generate conversationally","Upload yaml file")
-    choice = pick_from_list(options,"Create unit")
+    choice = pick_from_list(options,"New Topic")
     unit = None
 
     os.system('cls' if os.name == 'nt' else 'clear')
