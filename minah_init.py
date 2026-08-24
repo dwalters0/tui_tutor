@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from functools import partial
 from dataclasses import dataclass, field
-from minah_host import create_html, create_index, serve_folder
+from minah_host import create_html, create_index, serve
 
 
 from rich.console import Console
@@ -123,7 +123,8 @@ def run_host():
             create_index(topic, topic_html_folder / "index.html")
     host_now = input("\nHost now? (y/n): ")
     if host_now == "y":
-        serve_folder(topic_html_folder)
+        print(topic_html_folder)
+        serve(topic_html_folder)
         input("Now hosting. It'll keep hosting till you quit the app. Any key to continue...")
 
 def menu_get_host():
