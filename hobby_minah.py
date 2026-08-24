@@ -8,7 +8,7 @@ from minah_codex import auth_codex
 from minah_init import menu_get_next_lesson, menu_get_unit_continuations, \
     menu_get_progress_report, menu_get_select_any_lesson, \
     menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu, run_menu_get_configure, \
-    run_menu_get_configure
+    run_menu_get_configure, menu_get_host
 
 from minah_live_text import stream_panel
 
@@ -32,25 +32,6 @@ def main():
 
     config = get_config()
 
-    # if not there_is_a_curricula_folder_with_something_in_it:
-    #     print("Looks like this is your first time using Hobby Frog.")
-    #     print("Let's go through a few questions to setup.")
-    #     print("First we need to get the address of your AI, please enter the base URL. eg https://home.ai:11434 and the app will call https://home.ai:11434/v1/chat/completions")
-    #     address = input()
-    #
-    #
-    #     while True:
-    #         print("You can use a regular chatGPT subscription for the AI."
-    #               "If you already have codex cli inst")
-    #         chatgpt = input("Would you like to do this? y/n")
-    #         if chatgpt not in ['y','n']:
-    #             continue
-    #         elif chatgpt == 'y':
-    #             config.use_codex = True
-
-
-
-
     menu = Menu()
     menu.add(menu_get_next_lesson())
     menu.add(menu_get_unit_continuations())
@@ -60,6 +41,7 @@ def main():
     #menu.add(menu_get_create_unit_conversationally())
     menu.add(menu_get_create_unit())
     menu.add(menu_get_generate_lessons())
+    menu.add(menu_get_host())
     menu.add(run_menu_get_configure())
     menu.add(menu_get_exit())
 

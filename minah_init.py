@@ -3,6 +3,7 @@ import sys
 from pathlib import Path
 from functools import partial
 from dataclasses import dataclass, field
+from minah_host import create_html, create_index, serve_folder
 
 
 from rich.console import Console
@@ -11,8 +12,8 @@ console = Console()
 
 from minah_classes import Lesson, Topic, LessonOutline, Unit
 
-from utilities import print_box,pick_folder,pick_topic,pick_lesson,pick_folder_title, \
-    pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it
+from utilities import print_box, pick_folder, pick_topic, pick_lesson, pick_folder_title, \
+    pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it, normalise_filename
 
 from configuration import LastCompletedLesson, get_config
 
@@ -87,6 +88,47 @@ def run_configure():
 def run_menu_get_configure():
     title = "Configuration options"
     callable_partial =  partial(run_configure)
+    return MenuItem(title,callable_partial)
+
+def run_host():
+    curricula_path = Path(__file__).resolve().parent / "Curricula"
+    if not curricula_path.exists():
+        print("No lessons yet. No units loaded")
+        return
+    course_path = pick_folder_title(curricula_path, "Choose Course")
+    unit_path = pick_folder_title(course_path, "Choose Unit")
+    # print(f"unit_path is {unit_path}")
+
+    topics = []
+    topic_files = os.listdir(Path(unit_path) / "topics")
+    print("Loading topic files...")
+    for topic_file in topic_files:
+        topics.append(Topic.load(Path(unit_path) / "topics" / topic_file))
+    topics.sort(key=lambda topic: topic.order)
+    topic = pick_topic(topics)
+    topic_title_normalised = normalise_filename(topic.title)
+    topic_html_folder = Path(unit_path) / "html" / topic_title_normalised
+    if topic_html_folder.exists():
+        print("Html folder already exists")
+    else:
+        print("Html files not generated yet")
+        gen_now = input("\nGenerate now? (y/n): ")
+        if gen_now == "y":
+            topic_html_folder.mkdir(parents=True, exist_ok=True)
+            for lesson in topic.lessons:
+                print(f"Generating {lesson.title}")
+                lesson_html_file = topic_html_folder / (normalise_filename(lesson.title) + ".html")
+                html_file = create_html(lesson.content,lesson_html_file)
+                print(f"Done with {html_file}")
+            create_index(topic, topic_html_folder / "index.html")
+    host_now = input("\nHost now? (y/n): ")
+    if host_now == "y":
+        serve_folder(topic_html_folder)
+        input("Now hosting. It'll keep hosting till you quit the app. Any key to continue...")
+
+def menu_get_host():
+    title = "Host a topic"
+    callable_partial = partial(run_host)
     return MenuItem(title,callable_partial)
 
 def run_menu_get_next_lesson(next_lesson, next_topic, chosen_lesson_outline):
