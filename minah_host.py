@@ -45,7 +45,7 @@ class Handler(SimpleHTTPRequestHandler):
             if Path(self.path).is_file():
                 with open(self.translate_path(self.path),"r") as f:
                     lesson = f.read()
-            append_to_context(lesson)
+                    append_to_context(lesson)
             super().do_GET()
 
 
