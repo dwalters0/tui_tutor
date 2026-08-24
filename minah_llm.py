@@ -181,6 +181,7 @@ def generate_line_by_line(prompt, print_output=True) :
     return response_text
 
 def generate(prompt, print_output=True) :
+    print(prompt)
     config = get_config()
     if config.use_codex == True:
         return codex_generate(prompt, print_output)
