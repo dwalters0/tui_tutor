@@ -3,8 +3,9 @@ from pathlib import Path
 import threading
 from functools import partial
 from http.server import HTTPServer, SimpleHTTPRequestHandler
-from utilities import normalise_filename
+from utilities import normalise_filename, run_output_through_latex_and_markdown_rendering
 import json
+
 
 # singleton lesson context
 _context = ""
@@ -145,7 +146,7 @@ is as follows {get_context()}
 The user has asked {question}.
 """
     answer = generate(prompt,False)
-    return f"You asked: {question}.\n My answer is {answer}"
+    return f"{run_output_through_latex_and_markdown_rendering(answer)}"
 
 
 
