@@ -3,6 +3,7 @@ def get_lesson_html(response):
     return f"""
 <head>
     <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
 <div class="layout">
 <main id="lesson">
@@ -81,7 +82,7 @@ function addMessage(text, role) {
 
     const bubble = document.createElement("div");
     bubble.className = "message-bubble";
-    bubble.textContent = text;
+    bubble.innerHTML = text;
 
     message.appendChild(bubble);
     messages.appendChild(message);
@@ -224,8 +225,10 @@ async function askQuestion(question) {
 
         removeTypingIndicator();
 
+        let rendered_answer = marked.parse(data.answer);
+
         addMessage(
-            data.answer,
+            rendered_answer,
             "assistant"
         );
 

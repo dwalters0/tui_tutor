@@ -3,14 +3,14 @@ import sys
 from pathlib import Path
 from functools import partial
 from dataclasses import dataclass, field
-from minah_host import create_lesson_html, create_index, serve
+from frog_host import create_lesson_html, create_index, serve
 
 
 from rich.console import Console
 from rich.table import Table
 console = Console()
 
-from minah_classes import Lesson, Topic, LessonOutline, Unit
+from frog_classes import Lesson, Topic, LessonOutline, Unit
 
 from utilities import print_box, pick_folder, pick_topic, pick_lesson, pick_folder_title, \
     pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it, normalise_filename
@@ -22,7 +22,7 @@ from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_
     AddTopicDescriptionsToUnit, generate_topic_files, generate_all_lessons_for_a_topic, convo_unit_gen, \
     ask_user_for_unit_preference
 
-from minah_live_text import stream_panel
+from frog_live_text import stream_panel
 
 @dataclass
 class MenuItem:
@@ -35,20 +35,16 @@ class Menu:
 
     def show_and_select(self):
         logo = r"""
-   .-'--`.
-  / o     >
- |    /| /
- |   / |/
- |     |
-  \   /
-   \_/
-   / \
-  ^^ ^^
-            HOBBY MINAH
-          Play in your interests.
+                @..@
+               (----)
+              ( >__< )
+              ^^ ~~ ^^
+
+            HOBBY FROG
+          Jump into a hobby.
         """
 
-        print("\033[32m" + logo + "\033[0m")
+        print("\033[92m" + logo + "\033[0m")
 
         for i, item in enumerate(self.menu_items):
             print(f"{i}: {item.title}")
@@ -106,8 +102,8 @@ def run_host():
         topics.append(Topic.load(Path(unit_path) / "topics" / topic_file))
     topics.sort(key=lambda topic: topic.order)
     topic = pick_topic(topics)
-    topic_title_normalised = normalise_filename(topic.title)
-    topic_html_folder = Path(unit_path) / "html" / topic_title_normalised
+    topic_title_normalised = f"{topic.unit_code}_{topic.order}:{normalise_filename(topic.title)}"
+    topic_html_folder = Path(__file__).resolve().parent / "html" / topic_title_normalised
     if topic_html_folder.exists():
         print("Html folder already exists")
     else:
@@ -124,7 +120,7 @@ def run_host():
     host_now = input("\nHost now? (y/n): ")
     if host_now == "y":
         print(topic_html_folder)
-        serve(topic_html_folder)
+        serve("html")
         input("Now hosting. It'll keep hosting till you quit the app. Any key to continue...")
 
 def menu_get_host():

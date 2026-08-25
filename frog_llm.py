@@ -11,8 +11,8 @@ from pylatexenc.latex2text import LatexNodes2Text
 
 from configuration import get_config
 
-from minah_codex import generate as codex_generate
-from minah_codex import generate_toschema as codex_generate_toschema
+from frog_codex import generate as codex_generate
+from frog_codex import generate_toschema as codex_generate_toschema
 
 console = Console()
 

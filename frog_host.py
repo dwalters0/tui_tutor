@@ -1,13 +1,13 @@
-from minah_classes import Lesson
-from minah_llm import generate
+from frog_classes import Lesson
+from frog_llm import generate
 from pathlib import Path
 import threading
 from functools import partial
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from utilities import normalise_filename
 import json
-from minah_classes import Lesson
-from minah_host_pages import get_index_css, get_lesson_html
+from frog_classes import Lesson
+from frog_host_pages import get_index_css, get_lesson_html
 
 # singleton lesson context
 _context = ""
@@ -71,7 +71,7 @@ class Handler(SimpleHTTPRequestHandler):
                     "/favicon.ico"
             ):
                 print(self.path)
-                lesson_outline_id = self.path.split("/")[1].split(".")[0]
+                lesson_outline_id = self.path.split("/")[2].split(".")[0]
                 print(lesson_outline_id)
                 lesson = Lesson.load_from_outline_id(lesson_outline_id)
                 if lesson:

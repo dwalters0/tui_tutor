@@ -3,14 +3,14 @@ import os
 from pathlib import Path
 
 from configuration import get_config
-from minah_codex import auth_codex
+from frog_codex import auth_codex
 
-from minah_init import menu_get_next_lesson, menu_get_unit_continuations, \
+from frog_init import menu_get_next_lesson, menu_get_unit_continuations, \
     menu_get_progress_report, menu_get_select_any_lesson, \
     menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu, run_menu_get_configure, \
     run_menu_get_configure, menu_get_host
 
-from minah_live_text import stream_panel
+from frog_live_text import stream_panel
 
 from utilities import there_is_a_curricula_folder_with_something_in_it
 

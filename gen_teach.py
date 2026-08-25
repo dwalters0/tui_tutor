@@ -1,16 +1,16 @@
 import json
 
-from minah_llm import generate
-from minah_llm import generate_toschema
+from frog_llm import generate
+from frog_llm import generate_toschema
 
-from minah_rag import get_rag_context
+from frog_rag import get_rag_context
 
 from utilities import normalise_filename
 from utilities import print_box
 from utilities import run_output_through_latex_and_markdown_rendering
 
 from gen_curriculum import ask_user_for_unit_preference, regenerate_lesson_content_file
-from minah_classes import Unit
+from frog_classes import Unit
 
 
 from pathlib import Path
