@@ -421,6 +421,9 @@ class Lesson:
     def load_from_outline_id(cls, id_to_find):
         curricula_path = Path(__file__).resolve().parent / "Curricula"
         for path in Path(curricula_path).rglob("*.yaml"):
+            print(path.stem)
+            print(id_to_find)
             if path.stem == id_to_find:
                 return cls.load(path)
         return None
+

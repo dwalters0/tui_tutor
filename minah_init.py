@@ -3,7 +3,7 @@ import sys
 from pathlib import Path
 from functools import partial
 from dataclasses import dataclass, field
-from minah_host import create_html, create_index, serve
+from minah_host import create_lesson_html, create_index, serve
 
 
 from rich.console import Console
@@ -117,8 +117,8 @@ def run_host():
             topic_html_folder.mkdir(parents=True, exist_ok=True)
             for lesson in topic.lessons:
                 print(f"Generating {lesson.title}")
-                lesson_html_file = topic_html_folder / (normalise_filename(lesson.title) + ".html")
-                html_file = create_html(lesson.content,lesson_html_file)
+                lesson_html_file = topic_html_folder / (normalise_filename(lesson.outline_id) + ".html")
+                html_file = create_lesson_html(lesson.content, lesson_html_file)
                 print(f"Done with {html_file}")
             create_index(topic, topic_html_folder / "index.html")
     host_now = input("\nHost now? (y/n): ")

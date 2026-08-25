@@ -144,6 +144,7 @@ def generate_line_by_line(prompt, print_output=True) :
         }
 
     response = requests.post(url, json=payload, headers=headers)
+
     try:
         response_text = (
             response.json()
@@ -151,25 +152,11 @@ def generate_line_by_line(prompt, print_output=True) :
             .get("message", {})
             .get("content")
         )
+
     except Exception as e:
         print("There was an error contacting your LLM, maybe the URL is wrong in the config.")
         print(e)
         sys.exit(1)
-
-    LATEX_PATTERN = re.compile(
-        r"\$\$[\s\S]*?\$\$"
-        r"|\$[^$\n]+?\$"
-        r"|\\\[[\s\S]*?\\\]"
-        r"|\\\([\s\S]*?\\\)"
-    )
-
-    def convert_latex_in_markdown(text: str) -> str:
-        def replace_match(match: re.Match) -> str:
-            converter = LatexNodes2Text()
-            latex = match.group(0)
-            return converter.latex_to_text(latex)  # Convert only this expression
-
-        return LATEX_PATTERN.sub(replace_match, text)
 
     if print_output:
         output_text = convert_latex_in_markdown(response_text)
@@ -177,11 +164,27 @@ def generate_line_by_line(prompt, print_output=True) :
         for chunk in chunks:
             chunk_markdown = Markdown(chunk)
             console.print(chunk_markdown)
-            #input()
+            # input()
     return response_text
 
+LATEX_PATTERN = re.compile(
+    r"\$\$[\s\S]*?\$\$"
+    r"|\$[^$\n]+?\$"
+    r"|\\\[[\s\S]*?\\\]"
+    r"|\\\([\s\S]*?\\\)"
+)
+
+def convert_latex_in_markdown(text: str) -> str:
+    def replace_match(match: re.Match) -> str:
+        converter = LatexNodes2Text()
+        latex = match.group(0)
+        return converter.latex_to_text(latex)  # Convert only this expression
+
+    return LATEX_PATTERN.sub(replace_match, text)
+
+
+
 def generate(prompt, print_output=True) :
-    print(prompt)
     config = get_config()
     if config.use_codex == True:
         return codex_generate(prompt, print_output)

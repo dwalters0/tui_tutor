@@ -79,7 +79,6 @@ def run_output_through_latex_and_markdown_rendering(content):
         console.print(chunk_markdown)
         #input()
 
-
 def pick_MenuItem_from_list(items, title):
     print(f"\n{title}\n" + "-" * len(title))
 
