@@ -86,7 +86,7 @@ def run_menu_get_configure():
     callable_partial =  partial(run_configure)
     return MenuItem(title,callable_partial)
 
-def run_host():
+def run_generate_web_topic():
     curricula_path = Path(__file__).resolve().parent / "Curricula"
     if not curricula_path.exists():
         print("No lessons yet. No units loaded")
@@ -123,10 +123,21 @@ def run_host():
         serve("html")
         input("Now hosting. It'll keep hosting till you quit the app. Any key to continue...")
 
-def menu_get_host():
-    title = "Host a topic"
+def get_menu_generate_web_topic():
+    title = "Turn a topic into a website"
+    callable_partial = partial(run_generate_web_topic)
+    return MenuItem(title,callable_partial)
+
+def run_host():
+    serve("html")
+    input("Now hosting. It'll keep hosting till you quit the app. Any key to continue...")
+
+
+def get_menu_host():
+    title = "Host any websites you've made"
     callable_partial = partial(run_host)
     return MenuItem(title,callable_partial)
+
 
 def run_menu_get_next_lesson(next_lesson, next_topic, chosen_lesson_outline):
     if not next_lesson:

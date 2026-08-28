@@ -86,3 +86,4 @@ def teach(lesson)-> bool:
         ###END LLM ANSWER###"""      
         print_box("Hope that answered it well. Continue asking questions or enter \"/c\" to continue with lessons.")
         return True
+    return True
