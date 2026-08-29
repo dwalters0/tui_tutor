@@ -10,5 +10,13 @@ if [ ! -f /opt/app/InputUnits/AIFundamentals.yaml ]; then
   cp /opt/app/Defaults/AIFundamentals.yaml /opt/app/InputUnits/
 fi
 
+#make the html directory if it doesn't exist
+if [ ! -d /opt/app/html ]; then
+  mkdir /opt/app/html
+fi
+
+#host the html folder in the background
+python3 -m http.server 8082 -d /opt/app/html &
+
 #start the ssh server
 exec /usr/sbin/sshd -D -e
