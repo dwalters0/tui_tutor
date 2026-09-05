@@ -3,8 +3,6 @@ import sys
 from pathlib import Path
 from functools import partial
 from dataclasses import dataclass, field
-from frog_host import create_lesson_html, create_index, serve
-
 
 from rich.console import Console
 from rich.table import Table
