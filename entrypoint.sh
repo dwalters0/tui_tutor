@@ -16,7 +16,7 @@ if [ ! -d /opt/app/html ]; then
 fi
 
 #host the html folder in the background
-python3 -m http.server 8082 -d /opt/app/html &
+#python3 -m http.server 8082 -d /opt/app/html &
 
 #start the ssh server
 exec /usr/sbin/sshd -D -e
