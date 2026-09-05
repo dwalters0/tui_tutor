@@ -41,9 +41,9 @@ def main():
     #menu.add(menu_get_create_unit_conversationally())
     menu.add(menu_get_create_unit())
     menu.add(menu_get_generate_lessons())
-    menu.add(get_menu_generate_web_topic())
-    menu.add(get_menu_host())
-    menu.add(run_menu_get_configure())
+    #menu.add(get_menu_generate_web_topic())
+    #menu.add(get_menu_host())
+    #menu.add(run_menu_get_configure())
     menu.add(menu_get_exit())
 
     selected = menu.show_and_select()

@@ -40,8 +40,8 @@ class Menu:
               ( >__< )
               ^^ ~~ ^^
 
-            HOBBY FROG
-          Jump into a hobby.
+            TUTOR FROG
+          Jump into a topic.
         """
 
         print("\033[92m" + logo + "\033[0m")
