@@ -326,6 +326,36 @@ def run_select_any_lesson():
     if end_lesson:
         finish_lesson(chosen_lesson_outline,topic,lesson)
 
+def menu_get_media_break():
+    title = "Select Media Break"
+    callable_partial = partial(run_media_break)
+    return MenuItem(title, callable_partial)
+
+def run_media_break():
+    print("Here for each group of four lessons that have been completed, there will be 3 youtube recommendations"
+          "that relate to the content you just learned")
+    curricula_path = Path(__file__).resolve().parent / "Curricula"
+    if not curricula_path.exists():
+        print("No lessons yet. No units loaded")
+        return
+    course_paths = [dir for dir in curricula_path.iterdir() if dir.is_dir()]
+    for course_path in course_paths:
+        unit_paths = [dir for dir in course_path.iterdir() if dir.is_dir()]
+        for unit_path in unit_paths:
+            topics_folder = unit_path / "topics"
+            topic_files = topics_folder.glob("*.yaml")
+            for topic_file in topic_files:
+                topic = Topic.load(topic_file)
+                complete_groups = topic.GetFourRunCompletes()
+                for complete in complete_groups:
+                    print(complete.title)
+            input("press enter to continue")
+    #get all completed lessons aggregated by subject and topic
+    #show a menu with any 4 lesson completed runs
+    #when an item is selected, get the context from the four lessons then ask the LLM to recommend youtubes
+
+
+
 def menu_get_create_unit():
     title = "Dig into something new"
     callable_partial = partial(run_create_unit)

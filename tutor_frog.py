@@ -7,8 +7,8 @@ from frog_codex import auth_codex
 
 from frog_init import menu_get_next_lesson, menu_get_unit_continuations, \
     menu_get_progress_report, menu_get_select_any_lesson, \
-    menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu, run_menu_get_configure, \
-    run_menu_get_configure, get_menu_generate_web_topic, get_menu_host
+    menu_get_exit, menu_get_generate_lessons, menu_get_create_unit, Menu, menu_get_media_break # run_menu_get_configure, \
+    #run_menu_get_configure, get_menu_generate_web_topic, get_menu_host
 
 from frog_live_text import stream_panel
 
@@ -37,6 +37,8 @@ def main():
     menu.add(menu_get_unit_continuations())
     menu.add(menu_get_progress_report())
     menu.add(menu_get_select_any_lesson())
+    menu.add(menu_get_media_break())
+
     #menu.add(menu_get_generate_unit_files_from_yaml())
     #menu.add(menu_get_create_unit_conversationally())
     menu.add(menu_get_create_unit())

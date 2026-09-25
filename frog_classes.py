@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from typing import Self
 
 import yaml
@@ -211,6 +212,29 @@ class Topic:
     path: str = ""
     id: str = ""
 
+    def GetFourRunCompletes(self):
+        complete_groups = []
+        modulo_four_groups = len(self.lesson_outlines) % 4
+        groups_of_four_count = math.floor(len(self.lesson_outlines) / 4)
+        for groups_of_four_count in range(groups_of_four_count - 1):
+            current_group_start_index = groups_of_four_count * 4
+            current_group = []
+            current_group.append(self.lesson_outlines[current_group_start_index])
+            current_group.append(self.lesson_outlines[current_group_start_index+1])
+            current_group.append(self.lesson_outlines[current_group_start_index+2])
+            current_group.append(self.lesson_outlines[current_group_start_index+3])
+            if all(outline.complete for outline in current_group):
+                complete_groups.append(current_group)
+        last_group_of_four_index = (groups_of_four_count - 1)*4
+        last_group = []
+        for last_bit in range(modulo_four_groups - 1):
+            last_group.append(self.lesson_outlines[last_group_of_four_index + last_bit + 1])
+        if all(outline.complete for outline in last_group):
+            complete_groups.append(last_group)
+        return complete_groups
+
+
+
 
     @property
     def lessons_ordered_by_order(self) -> list:
@@ -336,6 +360,8 @@ class Topic:
                 return topic
         except FileNotFoundError:
             print("Error: File not found.")
+
+
 
 @dataclass
 class LessonOutline:

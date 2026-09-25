@@ -38,18 +38,25 @@ It's recommended to use docker or podman to host the application.
 ```
  docker run -d \
  --name tui_tutor \
+ --restart unless-stopped \
  -p 2222:22 \
- -v codex-data:/root/.codex \  
+ -p 8082:8082 \
+ -v codex-data:/home/dan/.codex \
  -v /run/media/dan/SSD/Docker/tutor/curricula:/opt/app/Curricula \
  -v /run/media/dan/SSD/Docker/tutor/inputunits:/opt/app/InputUnits \
  -v /run/media/dan/SSD/Docker/tutor/config:/opt/app/config \
- ghcr.io/dwalters0/tui_tutor:latest```
+ -v /run/media/dan/SSD/Docker/tutor/html:/opt/app/html \
+ ghcr.io/dwalters0/tui_tutor:latest
 ```
 
 Once the container is up, you can ssh into it on the mapped port and log in with the credentials root:root. A ForceCommand opens the app automatically.
 ```
 ssh -p 2222 root@localhost
 ```
+
+The generated websites are hosted continuously alongside the SSH console. From another machine on the same private network, open `http://<docker-host-ip>:8082`. The container binds the service to all network interfaces, but your router and firewall should keep port 8082 private to the LAN.
+
+You can check the web process without loading a lesson at `http://<docker-host-ip>:8082/healthz`. Both SSH and the web process are supervised inside the container, and `--restart unless-stopped` brings the container back after a Docker daemon or host restart.
 
 ## Sample InputUnit
 Add a .yaml file with the following structure to the InputUnits folder. It can contain any topic you like. ChatGPT is good at generating them too.

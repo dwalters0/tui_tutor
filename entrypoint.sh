@@ -15,8 +15,6 @@ if [ ! -d /opt/app/html ]; then
   mkdir /opt/app/html
 fi
 
-#host the html folder in the background
-#python3 -m http.server 8082 -d /opt/app/html &
-
-#start the ssh server
-exec /usr/sbin/sshd -D -e
+# Keep both SSH and the web application running, and restart either one if it
+# exits unexpectedly.
+exec /usr/bin/supervisord -c /opt/app/supervisord.conf
