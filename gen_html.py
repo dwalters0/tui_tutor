@@ -1,6 +1,7 @@
 from frog_classes import Lesson, Topic
 from frog_llm import generate
 from frog_host_pages import get_index_css, get_lesson_html
+from pathlib import Path
 
 def create_lesson_html(lesson, out_path):
     prompt = f"""
