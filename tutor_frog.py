@@ -37,6 +37,7 @@ def main():
     menu.add(menu_get_unit_continuations())
     menu.add(menu_get_progress_report())
     menu.add(menu_get_select_any_lesson())
+    menu.add(get_menu_generate_web_topic())
     menu.add(menu_get_media_break())
 
     #menu.add(menu_get_generate_unit_files_from_yaml())
