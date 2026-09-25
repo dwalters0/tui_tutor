@@ -22,6 +22,8 @@ from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_
 
 from frog_live_text import stream_panel
 
+from gen_html import create_lesson_html, create_index
+
 @dataclass
 class MenuItem:
     title: str
