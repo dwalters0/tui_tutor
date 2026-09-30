@@ -10,3 +10,4 @@ rich
 #torch
 #pymupdf
 pylatexenc
+flask

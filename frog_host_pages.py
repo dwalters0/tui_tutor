@@ -10,14 +10,14 @@ def get_index_body(header, tagline, summary, topic,cards):
       <p>{summary}</p>
     </header>
 
-    <nav class="topics">
+    <nav id="topics" class="topics">
 """
     count = 0
     for card in cards:
         count += 1
         body += f"""
             <a class="card" href="{card.link}">
-                <span class="number">{count:02d} / TODO: COMPLETE/INCOMPLETE</span>
+                <span class="number">{count:02d} <span id=complete-{card.link}></span></span>
                 <h2>{card.title}</h2>
                 <p>{card.summary}</p>
                 <span class="read-more">Explore topic <span class="arrow" aria-hidden="true">→</span></span>
@@ -29,6 +29,65 @@ def get_index_body(header, tagline, summary, topic,cards):
 </body>
 </html>
     """
+
+    #javascript
+    body += """
+<script>
+    /*
+ * Completion Stuff
+ */
+ 
+ function lessonIdFromHref(href) {
+        try {
+            const path = new URL(href, window.location.href).pathname;
+            const filename = path.split("/").pop();
+            if (!filename || !filename.endsWith(".html") || filename === "index.html") return null;
+            return filename.slice(0, -5);
+        } catch {
+            return null;
+        }
+    }
+    
+    async function getCompletionState(lesson_id){
+    
+        try{
+        const response = await fetch("/api/completions", {cache: "no-store"});
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.error || `HTTP ${response.status}`);
+            completionState = data.lessons || {};
+            const state = completionState[lesson_id];
+            return Boolean(state.complete)
+        }
+        catch(error){
+            console.error("Could not load lesson completion state", error);
+        }
+    
+    }
+    
+    async function refreshCompletionStatus(link){
+        lesson_id = lessonIdFromHref(link)
+        complete = await getCompletionState(lesson_id);
+        const isCompleteSpan = document.getElementById("complete-"+link);
+        if (complete === true) {
+            isCompleteSpan.innerHTML = "Complete"
+        }
+        else{
+            isCompleteSpan.innerHTML = 'Incomplete'
+        }
+    }
+    
+    window.addEventListener("load", function () {
+    const topics = document.getElementById("topics");
+    const cards = topics.querySelectorAll(".card");
+    cards.forEach(card => {
+        refreshCompletionStatus(card.getAttribute("href"));
+        });
+    });
+    
+</script>
+    """
+
+
     return body
 
 

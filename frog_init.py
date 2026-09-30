@@ -93,7 +93,6 @@ def run_generate_web_topic():
         return
     course_path = pick_folder_title(curricula_path, "Choose Course")
     unit_path = pick_folder_title(course_path, "Choose Unit")
-    # print(f"unit_path is {unit_path}")
 
     topics = []
     topic_files = os.listdir(Path(unit_path) / "topics")
@@ -102,8 +101,9 @@ def run_generate_web_topic():
         topics.append(Topic.load(Path(unit_path) / "topics" / topic_file))
     topics.sort(key=lambda topic: topic.order)
     topic = pick_topic(topics)
-    topic_title_normalised = f"{topic.unit_code}_{topic.order}:{normalise_filename(topic.title)}"
-    topic_html_folder = Path(__file__).resolve().parent / "html" / topic_title_normalised
+    unit_web_folder = f"{topic.unit_code}"
+    topic_title_normalised = f"{topic.order}:{normalise_filename(topic.title)}"
+    topic_html_folder = Path(__file__).resolve().parent / "html" / "courses" / unit_web_folder / topic_title_normalised
     if topic_html_folder.exists():
         print("Html folder already exists")
     else:

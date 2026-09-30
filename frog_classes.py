@@ -458,3 +458,11 @@ class index_display_html_card:
     title: str
     link: str
     summary: str
+
+@dataclass
+class unit_display_info:
+    course: str
+    course_code: str
+    name: str
+    unit_code: str
+    directory=""
