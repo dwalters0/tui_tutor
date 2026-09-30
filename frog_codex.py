@@ -38,7 +38,7 @@ def generate_toschema(prompt, schema):
     command = _base_command()
     schema_temp_path = Path("/tmp/schema.json")
     schema_out_path = Path("/tmp/schema_out.json")
-    with open(schema_temp_path, "w") as f:
+    with open(schema_temp_path, "w", encoding="utf-8") as f:
         json.dump(schema, f, indent=4)
     command.extend(["--output-schema", str(schema_temp_path), "-o", str(schema_out_path), "-"])
     result = subprocess.run(
@@ -49,7 +49,7 @@ def generate_toschema(prompt, schema):
         check=False,
     )
     if result.returncode == 0:
-        with open(schema_out_path, "r") as f:
+        with open(schema_out_path, "r", encoding="utf-8") as f:
             data = f.read()
         return data
     else:

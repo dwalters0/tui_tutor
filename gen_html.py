@@ -24,7 +24,7 @@ def create_lesson_html(lesson, out_path):
 
     html_page = get_lesson_html(lesson)
     path = Path(out_path)
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding="utf-8") as f:
         f.write(html_page)
     return path.resolve()
 
@@ -64,7 +64,7 @@ Make topic_header, topic_tagline, and topic summary to match.
         f.write(css)
 
     path = Path(out_path)
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding="utf-8") as f:
         f.write(index_html)
     return path.resolve()
 

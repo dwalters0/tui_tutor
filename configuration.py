@@ -84,7 +84,7 @@ class LastCompletedLesson:
     def load(cls):
         progress_save_path = Path(__file__).resolve().parent / "config" / "progress.yaml"
         try:
-            with open(progress_save_path, "r") as file:
+            with open(progress_save_path, "r", encoding="utf-8") as file:
                 data = yaml.safe_load(file)
         except FileNotFoundError:
             #print("progress file not found, continuing")
@@ -100,7 +100,7 @@ class LastCompletedLesson:
 
 def save_progress(progress_save: LastCompletedLesson):
     progress_save_path = Path(__file__).resolve().parent / "config" / "progress.yaml"
-    with open(progress_save_path, "w") as f:
+    with open(progress_save_path, "w", encoding="utf-8") as f:
         yaml.safe_dump(asdict(progress_save), f)
 
 

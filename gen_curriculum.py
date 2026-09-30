@@ -43,7 +43,7 @@ def convo_unit_gen():
         unit_json = json.loads(unit)
         unit_json["preferences"] = ""
         temp_unit_path = Path(__file__).parent / "InputUnits" / "temp.json"
-        with open(temp_unit_path,"w") as file:
+        with open(temp_unit_path,"w", encoding="utf-8") as file:
             json.dump(unit_json,file, indent=4)
         context += unit
         unit = Unit.load(str(temp_unit_path))
