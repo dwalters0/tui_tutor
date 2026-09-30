@@ -17,7 +17,7 @@ from gen_html import create_lesson_html, create_index
 
 def generate_web_unit(Unit: unit):
     for topic in Unit.topics:
-        generate_web_topic(unit, topic)
+        generate_web_topic(topic)
 
 # If topic has already been generated, this WILL overwrite it. Check before this.
 def generate_web_topic(Topic: topic):
