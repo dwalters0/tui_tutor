@@ -55,7 +55,6 @@ def create_unit(user_prompt) -> Unit:
 
 def get_unit_info(unit_code):
     curricula_folder = Path(__file__).resolve().parent / "Curricula"
-    unit_folder = ""
     for path in curricula_folder.rglob(unit_code):
         unit_folder = Path(path)
     unit_file = next(unit_folder.glob(f"*{unit_code}.yaml"))
