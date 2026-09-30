@@ -15,12 +15,12 @@ from frog_live_text import stream_panel
 from gen_html import create_lesson_html, create_index
 
 
-def generate_web_unit(Unit: unit):
+def generate_web_unit(unit):
     for topic in unit.topics:
         generate_web_topic(topic)
 
 # If topic has already been generated, this WILL overwrite it. Check before this.
-def generate_web_topic(Topic: topic):
+def generate_web_topic(topic):
     unit_web_folder = f"{topic.unit_code}"
     topic_title_normalised = f"{topic.order}:{normalise_filename(topic.title)}"
     topic_html_folder = Path(__file__).resolve().parent / "html" / "courses" / unit_web_folder / topic_title_normalised
