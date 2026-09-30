@@ -1,0 +1,19 @@
+{"type": "object",
+    "properties": {
+        "topic_header": {
+            "type": "string"
+        },
+        "topic_tagline": {
+            "type": "string"
+        },
+        "topic_summary": {
+            "type": "string"
+        }
+    },
+    "required": [
+        "topic_header",
+        "topic_tagline",
+        "topic_summary"
+    ],
+    "additionalProperties": false
+}

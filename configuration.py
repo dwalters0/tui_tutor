@@ -28,6 +28,7 @@ class Config:
     # rag_retrieval_authorization: str
     use_codex: bool
     codex_executable_path : str
+    display_url_for_html_content: str
 
     def save(self):
         config_file = Path(__file__).parent / "config" / "configuration.yaml"
@@ -62,6 +63,7 @@ class Config:
             # rag_retrieval_authorization= data["rag_retrieval"]["authorization"],
             use_codex=data["use_codex"],
             codex_executable_path=data["codex_executable_path"],
+            display_url_for_html_content= data["display_url_for_html_content"],
 
 
         )

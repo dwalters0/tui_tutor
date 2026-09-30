@@ -107,22 +107,28 @@ def run_generate_web_topic():
     if topic_html_folder.exists():
         print("Html folder already exists")
     else:
+        chosen_topic_lessons_not_generated_yet = [outline for outline in topic.lesson_outlines if not outline.generated]
+        if chosen_topic_lessons_not_generated_yet:
+            not_generated_titles = [outline.title for outline in chosen_topic_lessons_not_generated_yet]
+            not_generated_titles_out = "\n  -".join(not_generated_titles)
+            print(f"The following lessons aren't generated yet. If you don't generate them now, the html folder will be incomplete.\n  -{not_generated_titles_out}")
+            gen_lessons_now = input("\nGenerate now? (Y/n): ")
+            if gen_lessons_now.lower() == "y" or gen_lessons_now == "":
+                generate_all_lessons_for_a_topic(topic)
         print("Html files not generated yet")
-        gen_now = input("\nGenerate now? (y/n): ")
-        if gen_now == "y":
+        gen_now = input("\nGenerate now? (Y/n): ")
+        if gen_now.lower() == "y" or gen_now == "":
             topic_html_folder.mkdir(parents=True, exist_ok=True)
             for lesson in topic.lessons:
                 print(f"Generating {lesson.title}")
                 lesson_html_file = topic_html_folder / (normalise_filename(lesson.outline_id) + ".html")
-                html_file = create_lesson_html(lesson.content, lesson_html_file)
+                html_file = create_lesson_html(lesson, lesson_html_file)
                 print(f"Done with {html_file}")
+            print("Adding finishing touches")
             create_index(topic, topic_html_folder / "index.html")
-    host_now = input("\nHost now? (y/n): ")
-    if host_now == "y":
-        print(topic_html_folder)
-        serve("html")
-        input("Now hosting. It'll keep hosting till you quit the app. Any key to continue...")
-
+    print("done!")
+    print(f"Access the site at {get_config().display_url_for_html_content}")
+    input("Press enter to continue...")
 def get_menu_generate_web_topic():
     title = "Turn a topic into a website"
     callable_partial = partial(run_generate_web_topic)

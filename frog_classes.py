@@ -297,7 +297,7 @@ class Topic:
         for path in (Path(self.unit_folder) / "lessons").rglob("*.yaml"):
             all_unit_lessons.append(Lesson.load(path))
         topic_lessons = [lesson for lesson in all_unit_lessons if lesson.topic_id == self.id]
-
+        topic_lessons.sort(key=lambda l: l.order)
         return topic_lessons
 
     def get_next_lesson(self):
@@ -453,3 +453,8 @@ class Lesson:
                 return cls.load(path)
         return None
 
+@dataclass
+class index_display_html_card:
+    title: str
+    link: str
+    summary: str
