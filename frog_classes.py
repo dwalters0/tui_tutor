@@ -32,9 +32,25 @@ class Unit:
     preferences: str
 
     @property
+    def to_yaml_string(self):
+        outcomes = "\n- " + "\n- ".join(self.outcomes)
+        topics = "\n- " + "\n- ".join([topic.title for topic in self.topic_descriptions])
+
+        return f"""course: {self.course}
+course_code: {self.course_code}
+name: {self.name}
+unit_code: {self.unit_code}
+level: {self.level}
+total_duration: {self.total_duration}
+outcomes: {outcomes}        
+topic_descriptions: {topics}
+"""
+
+
+    @property
     def to_string(self):
-        outcomes = "\n\t- " + "\n\t- ".join(self.outcomes)
-        topics = "\n\t- " + "\n\t- ".join([topic.title for topic in self.topic_descriptions])
+        outcomes = "\n- " + "\n\t- ".join(self.outcomes)
+        topics = "\n- " + "\n\t- ".join([topic.title for topic in self.topic_descriptions])
 
         return f"""
 Course: {self.course}
@@ -138,6 +154,8 @@ Topics: {topics}
                 else:
                     get_path = ""
 
+                data["preferences"] = ""
+
                 the_topic_descriptions = []
                 if not isinstance(data["topic_descriptions"], list):
                     the_topic_descriptions = [
@@ -211,6 +229,9 @@ class Topic:
     unit_code: str
     path: str = ""
     id: str = ""
+    header: str = ""
+    tagline: str = ""
+    summary: str = ""
 
     def GetFourRunCompletes(self):
         complete_groups = []
@@ -264,7 +285,7 @@ class Topic:
         if not os.path.exists(topics_path):
             os.makedirs(topics_path)
             print("Created topic folder at " + str(topics_path))
-        self.path = str(topics_path / f"{self.order}-{topic_name}.yaml")
+        self.path = str(topics_path / f"{self.id}.yaml")
 
         with open(self.path, "w", encoding="utf-8") as file:
             yaml.safe_dump(
@@ -355,7 +376,11 @@ class Topic:
                     unit_folder=data["unit_folder"],
                     path=topic_file,
                     id=data["id"],
-                    unit_code = data["unit_code"]
+                    unit_code = data["unit_code"],
+                    header = data["header"],
+                    tagline = data["tagline"],
+                    summary = data["summary"],
+
                 )
                 return topic
         except FileNotFoundError:
@@ -465,4 +490,11 @@ class unit_display_info:
     course_code: str
     name: str
     unit_code: str
+    directory=""
+
+@dataclass
+class topic_display_info:
+    header: str
+    tagline: str
+    summary: str
     directory=""

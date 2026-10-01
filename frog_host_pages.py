@@ -314,6 +314,10 @@ def get_lesson_html(lesson):
     <link rel="stylesheet" href="style.css">
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </head>
+<p style="display: flex; justify-content: space-between;">
+    <span id="isCompleteSpan"></span>
+    <a href="./">Return to topic</a>
+</p>
 <h1>{lesson.title}</h1>
 <blockquote>
 {lesson.summary}
@@ -321,10 +325,6 @@ def get_lesson_html(lesson):
 <main id="lesson">
 {lesson.content}
 </main>
-<p>
-<span id=isCompleteSpan></span>
-<a href="./">Return to topic</a>
-</p>
 <div class="chat-header">
     <div>
         <div class="chat-title">Ask about this lesson</div>

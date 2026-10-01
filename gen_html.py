@@ -40,20 +40,12 @@ def create_index(topic,out_path):
 
     index_html = get_index_head(topic.title)
 
-    prompt = f"""
-You're making some summary fields for a topic with many lessons..
-The lessons in the lesson topic are as follows:
-{cards}
-Make topic_header, topic_tagline, and topic summary to match.   
-"""
-    summary_schema = load_json(Path(__file__).parent / "schemas" / "topic_summary_for_html_index.json")
-    summary_fields_json = generate_toschema(prompt,summary_schema)
-    summary_fields  = json.loads(summary_fields_json)
+
 
     index_html += get_index_body(
-        summary_fields["topic_header"],
-        summary_fields["topic_tagline"],
-        summary_fields["topic_summary"],
+        topic.header,
+        topic.tagline,
+        topic.summary,
         topic,
         cards
     )

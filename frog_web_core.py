@@ -1,11 +1,14 @@
 import os
 import sys
+import uuid
+import json
 from pathlib import Path
 from functools import partial
 from dataclasses import dataclass, field
-from frog_classes import Lesson, Topic, LessonOutline, Unit, unit_display_info
+from frog_classes import Lesson, Topic, LessonOutline, Unit, unit_display_info,topic_display_info
 from utilities import print_box, pick_folder, pick_topic, pick_lesson, pick_folder_title, \
-    pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it, normalise_filename
+    pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it, normalise_filename, \
+    load_json
 from configuration import LastCompletedLesson, get_config
 from gen_teach import teach
 from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_content_file, \
@@ -13,6 +16,8 @@ from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_
     ask_user_for_unit_preference
 from frog_live_text import stream_panel
 from gen_html import create_lesson_html, create_index
+from frog_llm import generate_toschema
+
 
 
 def generate_web_unit(unit):
@@ -22,8 +27,8 @@ def generate_web_unit(unit):
 # If topic has already been generated, this WILL overwrite it. Check before this.
 def generate_web_topic(topic):
     unit_web_folder = f"{topic.unit_code}"
-    topic_title_normalised = f"{topic.order}:{normalise_filename(topic.title)}"
-    topic_html_folder = Path(__file__).resolve().parent / "html" / "courses" / unit_web_folder / topic_title_normalised
+    topic_id = f"{topic.id}"
+    topic_html_folder = Path(__file__).resolve().parent / "html" / "courses" / unit_web_folder / topic_id
     chosen_topic_lessons_not_generated_yet = [outline for outline in topic.lesson_outlines if not outline.generated]
     if chosen_topic_lessons_not_generated_yet:
         #skips ones already genned
@@ -33,6 +38,36 @@ def generate_web_topic(topic):
         lesson_html_file = topic_html_folder / (normalise_filename(lesson.outline_id) + ".html")
         html_file = create_lesson_html(lesson, lesson_html_file)
         create_index(topic, topic_html_folder / "index.html")
+
+def create_draft_unit(user_prompt,context) -> Unit:
+    prompt = f"""
+    Please generate a unit definition according to the schema and the 
+    following user input {user_prompt} with the following context {context}. The topic
+    descriptions should be very brief (titles more than descriptions).
+    """
+    schema2 = load_json(Path(__file__).parent / "schemas" / "units.json")
+    unit = generate_toschema(prompt, schema2)
+    unit_json = json.loads(unit)
+    unit_json["preferences"] = ""
+    temp_unit_path = Path(__file__).parent / "InputUnits" / "temp.json"
+    with open(temp_unit_path, "w", encoding="utf-8") as file:
+        json.dump(unit_json, file, indent=4)
+    unit = Unit.load(str(temp_unit_path))
+    return unit.to_yaml_string
+
+def create_unit_from_yaml_string(yaml_string: str):
+    filename = f"{uuid.uuid4()}.yaml"
+    save_yaml_path = curricula_path = Path(__file__).resolve().parent / "InputUnits" / filename
+    save_yaml_path.write_text(yaml_string, encoding="utf-8")
+    unit = Unit.load(str(save_yaml_path))
+    unit.save()
+    if unit:
+        unit = AddTopicDescriptionsToUnit(unit)
+        unit.save()
+        generate_topic_files(unit)
+        generate_web_unit(unit)
+    else:
+        raise Exception("No unit generated, something went wrong.")
 
 def create_unit(user_prompt) -> Unit:
     user_desc = input()
@@ -65,3 +100,19 @@ def get_unit_info(unit_code):
         unit.name,
         unit.unit_code
     )
+
+def get_topic_info(unit_code,topic_code):
+    try:
+        curricula_folder = Path(__file__).resolve().parent / "Curricula"
+        for path in curricula_folder.rglob(unit_code):
+            unit_folder = Path(path)
+        topics_folder = Path(unit_folder) / "topics"
+        topic_file = next(topics_folder.glob(f"{topic_code}.yaml"))
+        topic = Topic.load(str(topic_file))
+        return topic_display_info(
+            topic.header,
+            topic.tagline,
+            topic.summary
+        )
+    except Exception as e:
+        return topic_display_info("Error retrieving topic info")

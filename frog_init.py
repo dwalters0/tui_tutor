@@ -102,8 +102,8 @@ def run_generate_web_topic():
     topics.sort(key=lambda topic: topic.order)
     topic = pick_topic(topics)
     unit_web_folder = f"{topic.unit_code}"
-    topic_title_normalised = f"{topic.order}:{normalise_filename(topic.title)}"
-    topic_html_folder = Path(__file__).resolve().parent / "html" / "courses" / unit_web_folder / topic_title_normalised
+    topic_id = f"{topic.id}"
+    topic_html_folder = Path(__file__).resolve().parent / "html" / "courses" / unit_web_folder / topic_id
     if topic_html_folder.exists():
         print("Html folder already exists")
     else:

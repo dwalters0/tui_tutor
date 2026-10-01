@@ -1,21 +1,9 @@
-<!--<h1>{{ folder }}</h1>-->
-<!--<nav class="files">-->
-<!--    {% for file in files %}-->
-<!--        <a class="card" href="/courses/{{ relative }}/{{ file }}/">-->
-<!--            {{ file }}-->
-<!--        </a>-->
-<!--    {% endfor %}-->
-<!--</nav>-->
-
-
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
    <title>{{folder}}</title>
   <style>
     :root {
@@ -219,25 +207,476 @@
         transition: none !important;
       }
     }
+
+    /* ---------- Chat ---------- */
+
+    .chat-header {
+        margin-top: 24px;
+        padding: 18px 20px;
+
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-bottom: none;
+
+        border-radius: 10px 10px 0 0;
+    }
+
+    .chat-title {
+        color: #f0f6fc;
+        font-size: 1.05rem;
+        font-weight: 650;
+    }
+
+    .chat-subtitle {
+        margin-top: 3px;
+
+        color: var(--text-muted);
+        font-size: 0.85rem;
+    }
+
+
+    /* ---------- Chat messages ---------- */
+
+    .chat-messages {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+
+        min-height: 35px;
+        padding: 20px;
+
+        background: #0f141a;
+
+        border-left: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+    }
+
+    .message {
+        display: flex;
+    }
+
+    .message.user {
+        justify-content: flex-end;
+    }
+
+    .message.assistant {
+        justify-content: flex-start;
+    }
+
+    .message-bubble {
+        max-width: 78%;
+        padding: 11px 15px;
+
+        border-radius: 10px;
+
+        line-height: 1.55;
+
+        white-space: pre-wrap;
+    }
+
+    .message.user .message-bubble {
+        background: #1f6feb;
+        color: white;
+
+        border-bottom-right-radius: 3px;
+    }
+
+    .message.assistant .message-bubble {
+        background: var(--surface-light);
+        border: 1px solid var(--border);
+
+        color: var(--text);
+
+        border-bottom-left-radius: 3px;
+    }
+
+    .message-bubble p:first-child {
+        margin-top: 0;
+    }
+
+    .message-bubble p:last-child {
+        margin-bottom: 0;
+    }
+
+    .message-bubble pre {
+        overflow-x: auto;
+
+        padding: 12px;
+
+        background: var(--bg);
+        border-radius: 6px;
+    }
+
+
+    /* ---------- Chat input ---------- */
+
+    .chat-input-area {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+
+        padding: 14px;
+
+        background: var(--surface);
+
+        border: 1px solid var(--border);
+        border-radius: 0 0 10px 10px;
+    }
+
+    #chatInput {
+        flex: 1;
+
+        width: 100%;
+        min-height: 44px;
+        max-height: 140px;
+
+        padding: 11px 13px;
+
+        resize: none;
+
+        background: var(--bg);
+        color: var(--text);
+
+        border: 1px solid var(--border-light);
+        border-radius: 7px;
+
+        font: inherit;
+        line-height: 1.4;
+
+        outline: none;
+    }
+
+    #chatInput::placeholder {
+        color: #6e7681;
+    }
+
+    #chatInput:focus {
+        border-color: var(--accent);
+
+        box-shadow:
+            0 0 0 3px rgba(88, 166, 255, 0.12);
+    }
+
+    #sendButton {
+        min-width: 80px;
+        height: 44px;
+    }
+
   </style>
 </head>
 
     <body>
   <main>
-<nav class="files">
-    {% for unit_info in unit_infos %}
-                <a class="card" href="/courses/{{ relative }}/{{ unit_info.directory }}/">
-<!--                <span class="number">01 <span id=complete-02d26bcb-cc18-4463-80dd-2c5a9dca2549.html></span></span>-->
-                <h2>{{ unit_info.name }}</h2>
-                <p>Course: {{ unit_info.course_code }} {{ unit_info.course }}</p>
-                <span class="read-more">Go to unit <span class="arrow" aria-hidden="true">→</span></span>
-            </a>
+      <div class="chat-header">
+    <div>
+        <div class="chat-title">Generate a new topic</div>
+        <div class="chat-subtitle">Ask the tutor to generate a new topic, describe what you want to learn and any preferences about how it will teach you.</div>
+    </div>
+</div>
+<div class="chat-messages" id="chatMessages">
+    <div class="message assistant">
+    </div>
+</div>
 
-    {% endfor %}
-</nav>
+<form class="chat-input-area" id="chatForm">
+    <textarea
+        id="chatInput"
+        rows="2"
+        placeholder="Describe what you want to learn..."
+    ></textarea>
+
+    <button type="submit" id="sendButton">
+        Send
+    </button>
+</form>
+      <p></p>
+      <h2>Ready courses</h2>
+        <nav class="files">
+            {% for unit_info in unit_infos %}
+                        <a class="card" href="/courses/{{ relative }}/{{ unit_info.directory }}/">
+        <!--                <span class="number">01 <span id=complete-02d26bcb-cc18-4463-80dd-2c5a9dca2549.html></span></span>-->
+                        <h2>{{ unit_info.name }}</h2>
+                        <p>Course: {{ unit_info.course_code }} {{ unit_info.course }}</p>
+                        <span class="read-more">Go to unit <span class="arrow" aria-hidden="true">→</span></span>
+                    </a>
+
+            {% endfor %}
+        </nav>
 
     <footer>Generated by AI, take care not to trust blindly.</footer>
   </main>
 </body>
+
+<script>
+    const form = document.getElementById("chatForm");
+    const input = document.getElementById("chatInput");
+    const messages = document.getElementById("chatMessages");
+    const sendButton = document.getElementById("sendButton");
+
+    let conversation = [];
+    let waitingForResponse = false;
+
+    /*
+     * Add a message bubble to the chat UI.
+     */
+    function addMessage(text, role) {
+        const message = document.createElement("div");
+        message.className = `message ${role}`;
+
+        const bubble = document.createElement("div");
+        bubble.className = "message-bubble";
+        bubble.innerHTML = text;
+
+        message.appendChild(bubble);
+        messages.appendChild(message);
+
+        scrollToBottom();
+
+        return message;
+    }
+
+    /*
+     * Show a temporary "Thinking..." message while waiting
+     * for the LLM response.
+     */
+    function addTypingIndicator() {
+        const message = document.createElement("div");
+        message.className = "message assistant";
+        message.id = "typingIndicator";
+
+        const bubble = document.createElement("div");
+        bubble.className = "message-bubble";
+        bubble.textContent = "Thinking...";
+
+        message.appendChild(bubble);
+        messages.appendChild(message);
+
+        scrollToBottom();
+    }
+
+
+    /*
+     * Remove the temporary typing indicator.
+     */
+    function removeTypingIndicator() {
+        const indicator = document.getElementById("typingIndicator");
+
+        if (indicator) {
+            indicator.remove();
+        }
+    }
+
+
+    /*
+     * Scroll chat to newest message.
+     */
+    function scrollToBottom() {
+        //messages.scrollTop = messages.scrollHeight;
+    }
+
+
+    /*
+     * Resize textarea as the user types.
+     */
+    function resizeInput() {
+        input.style.height = "auto";
+
+        const maxHeight = 140;
+
+        input.style.height =
+            Math.min(input.scrollHeight, maxHeight) + "px";
+    }
+
+
+    /*
+     * Enable/disable chat controls while a request is active.
+     */
+    function setLoading(loading) {
+        waitingForResponse = loading;
+        sendButton.disabled = loading;
+
+        if (loading) {
+            sendButton.textContent = "Sending...";
+        } else {
+            sendButton.textContent = "Send";
+        }
+    }
+
+
+    /*
+     * Submit a question to the backend.
+     */
+    async function askQuestion(question) {
+
+
+
+        addMessage(question, "user");
+
+        conversation.push({
+            role: "user",
+            content: question
+        });
+
+        input.value = "";
+        resizeInput();
+
+        setLoading(true);
+        addTypingIndicator();
+
+        try {
+            let response;
+            if (question === "/accept"){
+                const lastAssistant = conversation.findLast(
+                    item => item.role === "assistant"
+                );
+                const accepted_unit = lastAssistant?.content;
+
+                response = await fetch("/api/confirmed_gen", {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+
+                        body: JSON.stringify({
+                            unit: accepted_unit,
+                        })
+                    });
+            }
+            else{
+                response = await fetch("/api/convo_gen", {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        question: question,
+                        messages: conversation
+                    })
+                });
+            }
+            if (!response.ok) {
+                let errorText;
+
+                try {
+                    const errorData = await response.json();
+
+                    errorText =
+                        errorData.error ||
+                        errorData.message ||
+                        `HTTP ${response.status}`;
+                } catch {
+                    errorText = `HTTP ${response.status}`;
+                }
+
+                throw new Error(errorText);
+            }
+
+            const data = await response.json();
+
+            if (!data.answer) {
+                throw new Error(
+                    "The server returned no answer."
+                );
+            }
+
+            removeTypingIndicator();
+
+            let rendered_answer = marked.parse(data.answer);
+
+            addMessage(
+                data.answer,
+                "assistant"
+            );
+
+            conversation.push({
+                role: "assistant",
+                content: data.answer
+            });
+
+        } catch (error) {
+            console.error(
+                "Chat request failed:",
+                error
+            );
+
+            removeTypingIndicator();
+
+            addMessage(
+                `Sorry, I couldn't get an answer. ${error.message}`,
+                "assistant"
+            );
+
+        } finally {
+            setLoading(false);
+
+            input.focus();
+
+            scrollToBottom();
+        }
+    }
+
+
+    /*
+     * Form submission.
+     */
+    form.addEventListener(
+        "submit",
+        async (event) => {
+            event.preventDefault();
+
+            if (waitingForResponse) {
+                return;
+            }
+
+            const question =
+                input.value.trim();
+
+            if (!question) {
+                return;
+            }
+
+            await askQuestion(question);
+        }
+    );
+
+
+    /*
+     * Enter sends.
+     * Shift+Enter inserts a newline.
+     */
+    input.addEventListener(
+        "keydown",
+        (event) => {
+            if (
+                event.key === "Enter" &&
+                !event.shiftKey
+            ) {
+                event.preventDefault();
+
+                form.requestSubmit();
+            }
+        }
+    );
+
+
+    /*
+     * Auto-resize textarea while typing.
+     */
+    input.addEventListener(
+        "input",
+        resizeInput
+    );
+
+
+    /*
+     * Initial setup.
+     */
+    resizeInput();
+    input.focus();
+</script>
+
 </html>
 

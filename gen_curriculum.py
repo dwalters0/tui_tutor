@@ -232,7 +232,9 @@ The references may or may not be relevant. Use only those that directly help ans
                 )
             )
         lesson_order = lesson_order + 1
-    
+
+
+
     topic = Topic(
         title=title,
         lesson_outlines=new_lesson_outlines,
@@ -240,7 +242,31 @@ The references may or may not be relevant. Use only those that directly help ans
         unit_folder=unit_folder,
         unit_code=unit_code,
         id=topic_id)
+
+    display_fields = generate_topic_display_fields(topic)
+    topic.header = display_fields["topic_header"]
+    topic.tagline = display_fields["topic_tagline"]
+    topic.summary = display_fields["topic_summary"]
+
     return topic
+
+def generate_topic_display_fields(topic):
+    lesson_outlines = []
+    for lesson_outline in topic.lesson_outlines:
+        lesson_outlines.append([lesson_outline.title, lesson_outline.summary])
+
+    prompt = f"""
+    You're making some summary fields for a topic with many lessons..
+    The lessons in the lesson topic are as follows:
+    {lesson_outlines}
+    Make topic_header, topic_tagline, and topic summary to match.   
+    """
+    display_fields_schema = load_json(Path(__file__).parent / "schemas" / "topic_summary_for_html_index.json")
+    display_fields_json = generate_toschema(prompt, display_fields_schema)
+    display_fields = json.loads(display_fields_json)
+
+    return display_fields
+
 
 def generate_topic_files(unit):
     order = 0

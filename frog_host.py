@@ -10,7 +10,7 @@ import json
 from frog_host_pages import get_index_css, get_lesson_html
 from configuration import LastCompletedLesson, save_progress
 from flask import Flask, request, render_template, send_from_directory, send_file
-from frog_web_core import get_unit_info
+from frog_web_core import get_unit_info, get_topic_info, create_draft_unit, create_unit_from_yaml_string
 
 
 app = Flask(__name__,template_folder=Path(__file__).resolve().parent / "html_templates")
@@ -25,7 +25,7 @@ def index():
     folders = [
         item.name
         for item in directory.iterdir()
-        if item.is_dir()
+        if item.is_dir() and item.name not in [".DS_Store"]
     ]
 
     relative = directory.relative_to(webroot)
@@ -48,16 +48,23 @@ def courses(unit_code):
     directory = webroot / unit_code
 
 
-    files = [
+    folders = [
         item.name
         for item in directory.iterdir()
+        if item.is_dir() and item.name not in [".DS_Store"]
     ]
+
+    topic_infos = []
+    for folder in folders:
+        topic_info = get_topic_info(unit_code,folder)
+        topic_info.directory = folder
+        topic_infos.append(topic_info)
 
     relative = directory.relative_to(webroot)
 
     return render_template(
-        "directory.html",
-        files=files,
+        "units.html",
+        topic_infos=topic_infos,
         folder = directory,
         relative = relative
     )
@@ -111,6 +118,41 @@ def ask():
         )
 
         return {"answer": answer}
+
+    except Exception as e:
+       return {"error": str(e)},500
+
+@app.route("/api/convo_gen", methods=["POST"])
+def convo_gen():
+    try:
+        data = request.get_json()
+
+        question = data["question"]
+        messages = data["messages"]
+
+        if not question:
+            return {"error": "Missing question"},400
+
+        answer = ask_llm_convo_gen(
+            question=question,
+            messages=messages
+        )
+
+        return {"answer": answer}
+
+    except Exception as e:
+       return {"error": str(e)},500
+
+@app.route("/api/confirmed_gen", methods=["POST"])
+def confirmed_gen():
+    try:
+        data = request.get_json()
+
+        unit_yaml = data["unit"]
+
+        create_unit_from_yaml_string(unit_yaml)
+
+        return {"answer": "Done. Refresh the page."}
 
     except Exception as e:
        return {"error": str(e)},500
@@ -369,6 +411,11 @@ The user has asked {question}.
 """
 
     answer = generate(prompt,False)
+    return f"{answer}"
+
+def ask_llm_convo_gen(question, messages):
+    conversation = json.dumps(messages, ensure_ascii=False)
+    answer = create_draft_unit(question, conversation)
     return f"{answer}"
 
 if __name__ == "__main__":
