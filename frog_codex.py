@@ -15,24 +15,27 @@ def auth_codex():
 
 def generate(prompt, print_output=True):
     command = _base_command()
-    result = subprocess.run(
-        command,
-        input=prompt,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    if result.returncode == 0:
-        if print_output:
+    try:
+        result = subprocess.run(
+            command,
+            input=prompt,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            if print_output:
+                print(result.stdout)
+            return result.stdout
+        else:
             print(result.stdout)
-        return result.stdout
-    else:
-        print(result.stdout)
-        print(result.stderr)
-        print(result.returncode)
-        raise Exception("Failed to execute codex")
-        return None
-
+            print(result.stderr)
+            print(result.returncode)
+            raise Exception("Failed to execute codex")
+            return None
+    except Exception as e:
+        print("SUBPROCESS FAILED TO START:", repr(e))
+        raise e
 
 def generate_toschema(prompt, schema):
     command = _base_command()
