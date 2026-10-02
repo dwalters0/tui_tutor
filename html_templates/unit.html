@@ -219,12 +219,83 @@
         transition: none !important;
       }
     }
+    /*header stuff*/
+
+.site-header {
+    height: 64px;
+    padding: 0 24px;
+
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    /* No header background */
+    background: transparent;
+}
+
+/* Logo stays on the left */
+.site-logo {
+    position: absolute;
+    left: 24px;
+    top: 0%;
+
+    width: 200px;
+    height: 200px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    opacity: 0.3;
+
+    z-index: -1;
+}
+
+.site-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    display: block;
+}
+
+/* Navigation is centered across the actual page */
+.site-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 32px;
+}
+
+.site-nav a {
+    color: #d5d8d5;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.site-nav a:hover {
+    color: #ffffff;
+}
+
+
   </style>
 </head>
+<header class="site-header">
+    <a href="/" class="site-logo">
+        <img src="/web/static/images/tutor_frog.png" alt="Tutor Frog">
+    </a>
 
+    <nav class="site-nav">
+        <a href="/">Home</a>
+        <a href="#">Courses</a>
+        <a href="#">Progress</a>
+        <a href="#">About</a>
+    </nav>
+</header>
     <body>
   <main>
-<nav class="files">
+<nav class="topics">
     {% for file in files %}
         <a class="card" href="/courses/{{ relative }}/{{ file }}/">
             {{ file }}

@@ -18,7 +18,7 @@ app = Flask(__name__,template_folder=Path(__file__).resolve().parent / "html_tem
 webroot = Path(__file__).resolve().parent / "html" / "courses"
 #templates = Path(__file__).resolve().parent / "html_templates"
 
-@app.route("/courses/")
+@app.route("/")
 def index():
     directory = webroot
 
@@ -191,6 +191,20 @@ def unit_info(unit):
     "name":display_info.name,
     "unit_code":display_info.unit_code
     }
+
+@app.route("/web/static/images/<image_file>")
+def web_image(image_file):
+    directory = Path(__file__).resolve().parent / "web" / "static" / "images"
+
+    files = [
+        item.name
+        for item in directory.iterdir()
+        if item.name == image_file
+    ]
+
+
+
+    return send_file(directory / files[0])
 
 
 # class Handler(SimpleHTTPRequestHandler):
@@ -420,4 +434,4 @@ def ask_llm_convo_gen(question, messages):
 
 if __name__ == "__main__":
     #serve(Path(__file__).resolve().parent / "html")
-    app.run(host="0.0.0.0", port=8082,debug=True)
+    app.run(host="0.0.0.0", port=8082,debug=False)
