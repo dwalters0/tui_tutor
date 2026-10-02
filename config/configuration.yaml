@@ -1,8 +1,8 @@
-codex_executable_path: /root/.local/bin/codex
+codex_executable_path: /home/dan/.codex/packages/standalone/current/bin/codex
 openapi_api_key: newkey
 openapi_api_model: Llama-3.2-3B-Instruct.Q4_K
 openapi_api_output_mode: line_by_line
 openapi_api_url: http://pc.dan:11434/v1/chat/completions
 openapi_auth_type: body
-use_codex: False
+use_codex: false
 display_url_for_html_content: http://127.0.0.1:8082
