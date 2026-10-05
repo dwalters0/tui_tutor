@@ -66,6 +66,7 @@ def create_unit_from_yaml_string(yaml_string: str):
         unit.save()
         generate_topic_files(unit)
         generate_web_unit(unit)
+        print("Done")
     else:
         raise Exception("No unit generated, something went wrong.")
 

@@ -11,7 +11,8 @@ from frog_host_pages import get_index_css, get_lesson_html
 from configuration import LastCompletedLesson, save_progress
 from flask import Flask, request, render_template, send_from_directory, send_file
 from frog_web_core import get_unit_info, get_topic_info, create_draft_unit, create_unit_from_yaml_string
-
+from concurrent.futures import Executor, ThreadPoolExecutor
+import uuid
 
 app = Flask(__name__,template_folder=Path(__file__).resolve().parent / "html_templates")
 
@@ -143,18 +144,36 @@ def convo_gen():
     except Exception as e:
        return {"error": str(e)},500
 
+
+
+def report_exception(future):
+    try:
+        future.result()
+    except Exception:
+        import traceback
+        traceback.print_exc()
+
+executor = ThreadPoolExecutor()
+
+
 @app.route("/api/confirmed_gen", methods=["POST"])
 def confirmed_gen():
     try:
+        jobid = uuid.uuid4()
+        print(f"NEW JOBID {jobid}")
         data = request.get_json()
 
         unit_yaml = data["unit"]
 
-        create_unit_from_yaml_string(unit_yaml)
 
+        future = executor.submit(create_unit_from_yaml_string,unit_yaml)
+        future.add_done_callback(report_exception)
+        print(f"Job about to return {jobid}")
         return {"answer": "Done. Refresh the page."}
 
     except Exception as e:
+       print(f"exception on {jobid}")
+       print(e)
        return {"error": str(e)},500
 
 @app.route("/api/lessons/<lesson_id>/completion", methods=["PUT"])
