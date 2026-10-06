@@ -11,4 +11,5 @@ rich
 #pymupdf
 pylatexenc
 flask
+flask-socketio
 gunicorn

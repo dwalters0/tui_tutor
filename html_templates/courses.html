@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
      <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
    <title>Tutor Frog</title>
   <style>
     :root {
@@ -556,6 +557,21 @@
         scrollToBottom();
     }
 
+    function JobCompleteIndicator(input_message) {
+        const message = document.createElement("div");
+        message.className = "message assistant";
+        message.id = "jobCompleteIndicator";
+
+        const bubble = document.createElement("div");
+        bubble.className = "message-bubble";
+        bubble.textContent = input_message;
+
+        message.appendChild(bubble);
+        messages.appendChild(message);
+
+        scrollToBottom();
+    }
+
 
     /*
      * Remove the temporary typing indicator.
@@ -564,6 +580,7 @@
         const typingIndicator = document.getElementById("typingIndicator");
         const acceptPrompt = document.getElementById("acceptPrompt");
         const longWaitIndicator = document.getElementById("longWaitIndicator");
+        const jobCompleteIndicator = document.getElementById("jobCompleteIndicator");
 
         if (typingIndicator) {
             typingIndicator.remove();
@@ -574,6 +591,10 @@
         if (longWaitIndicator) {
             longWaitIndicator.remove();
         }
+        if (jobCompleteIndicator) {
+            jobCompleteIndicator.remove();
+        }
+
     }
 
 
@@ -612,6 +633,7 @@
         }
     }
 
+    let current_job_id = null
 
     /*
      * Submit a question to the backend.
@@ -636,7 +658,6 @@
         try {
             let response;
             if (question === "/accept"){
-                addLongWaitIndicator();
                 const lastAssistant = conversation.findLast(
                     item => item.role === "assistant"
                 );
@@ -653,6 +674,7 @@
                             unit: accepted_unit,
                         })
                     });
+
             }
             else{
                 response = await fetch("/api/convo_gen", {
@@ -693,7 +715,9 @@
                 );
             }
 
-            removeManualMessages();
+            if(data.job_id){
+                current_job_id = data.job_id;
+            }
 
             addMessage(
                 data.answer,
@@ -789,6 +813,30 @@
      */
     resizeInput();
     input.focus();
+
+
+/*
+ * Sockets stuff
+ */
+    const socket = io()
+    socket.on("job_status", (data) => {
+            console.log("received socket event")
+            console.log(data)
+            if (data.job_id === current_job_id){
+            switch(data.status) {
+                case "complete":
+                    console.log("Received complete for job_id:" + data.job_id)
+                    JobCompleteIndicator("The course has been generated, refresh the page.")
+                    break;
+                case "failed":
+                    console.log("Received failed for job_id:" + data.job_id)
+                    JobCompleteIndicator("Something went wrong with the course generation. Error:" + data.error)
+                    break;
+            }
+        }
+    });
+
+
 </script>
 
 </html>

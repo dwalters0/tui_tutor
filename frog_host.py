@@ -13,8 +13,11 @@ from flask import Flask, request, render_template, send_from_directory, send_fil
 from frog_web_core import get_unit_info, get_topic_info, create_draft_unit, create_unit_from_yaml_string
 from concurrent.futures import Executor, ThreadPoolExecutor
 import uuid
+from flask_socketio import SocketIO
+
 
 app = Flask(__name__,template_folder=Path(__file__).resolve().parent / "html_templates")
+socketio = SocketIO(app, sync_mode="threading")
 
 webroot = Path(__file__).resolve().parent / "html" / "courses"
 #templates = Path(__file__).resolve().parent / "html_templates"
@@ -148,7 +151,8 @@ def convo_gen():
 
 def report_exception(future):
     try:
-        future.result()
+        result = future.result()
+        print(result)
     except Exception:
         import traceback
         traceback.print_exc()
@@ -158,23 +162,19 @@ executor = ThreadPoolExecutor()
 
 @app.route("/api/confirmed_gen", methods=["POST"])
 def confirmed_gen():
-    try:
-        jobid = uuid.uuid4()
-        print(f"NEW JOBID {jobid}")
-        data = request.get_json()
+    job_id = uuid.uuid4()
+    print(f"NEW JOBID {job_id}")
+    data = request.get_json()
+    unit_yaml = data["unit"]
+    future = executor.submit(create_unit_from_yaml_string,unit_yaml,job_id,socketio)
+    future.add_done_callback(report_exception)
+    print(f"Job about to return {job_id}")
+    return {
+        "answer": "Course generated started. This can take a while so you can do something else while you wait. I'll tell you in this chat when it's done or if you navigate away, it will appear here once it's done.",
+        "job_id": job_id
+    }
 
-        unit_yaml = data["unit"]
 
-
-        future = executor.submit(create_unit_from_yaml_string,unit_yaml)
-        future.add_done_callback(report_exception)
-        print(f"Job about to return {jobid}")
-        return {"answer": "Done. Refresh the page."}
-
-    except Exception as e:
-       print(f"exception on {jobid}")
-       print(e)
-       return {"error": str(e)},500
 
 @app.route("/api/lessons/<lesson_id>/completion", methods=["PUT"])
 def set_completion(lesson_id):
@@ -453,4 +453,11 @@ def ask_llm_convo_gen(question, messages):
 
 if __name__ == "__main__":
     #serve(Path(__file__).resolve().parent / "html")
-    app.run(host="0.0.0.0", port=8082,debug=False)
+    #app.run(host="0.0.0.0", port=8082,debug=False)
+    socketio.run(
+        app,
+        host="0.0.0.0",
+        port=8082,
+        debug=True,
+        allow_unsafe_werkzeug=True
+    )

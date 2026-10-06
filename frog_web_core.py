@@ -17,6 +17,9 @@ from gen_curriculum import generate_next_lesson, finish_lesson, generate_lesson_
 from frog_live_text import stream_panel
 from gen_html import create_lesson_html, create_index
 from frog_llm import generate_toschema
+from utilities import normalise_filename
+
+from flask_socketio import emit
 
 
 
@@ -24,10 +27,9 @@ def generate_web_unit(unit):
     for topic in unit.topics:
         generate_web_topic(topic)
 
-# If topic has already been generated, this WILL overwrite it. Check before this.
 def generate_web_topic(topic):
-    unit_web_folder = f"{topic.unit_code}"
-    topic_id = f"{topic.id}"
+    unit_web_folder = f"{normalise_filename(topic.unit_code)}"
+    topic_id = f"{normalise_filename(topic.id)}"
     topic_html_folder = Path(__file__).resolve().parent / "html" / "courses" / unit_web_folder / topic_id
     chosen_topic_lessons_not_generated_yet = [outline for outline in topic.lesson_outlines if not outline.generated]
     if chosen_topic_lessons_not_generated_yet:
@@ -55,20 +57,48 @@ def create_draft_unit(user_prompt,context) -> Unit:
     unit = Unit.load(str(temp_unit_path))
     return unit.to_yaml_string
 
-def create_unit_from_yaml_string(yaml_string: str):
-    filename = f"{uuid.uuid4()}.yaml"
-    save_yaml_path = curricula_path = Path(__file__).resolve().parent / "InputUnits" / filename
-    save_yaml_path.write_text(yaml_string, encoding="utf-8")
-    unit = Unit.load(str(save_yaml_path))
-    unit.save()
-    if unit:
-        unit = AddTopicDescriptionsToUnit(unit)
+def create_unit_from_yaml_string(yaml_string: str,job_id: str,socketio):
+    try:
+        filename = f"{uuid.uuid4()}.yaml"
+        save_yaml_path = curricula_path = Path(__file__).resolve().parent / "InputUnits" / filename
+        save_yaml_path.write_text(yaml_string, encoding="utf-8")
+        unit = Unit.load(str(save_yaml_path))
         unit.save()
-        generate_topic_files(unit)
-        generate_web_unit(unit)
-        print("Done")
-    else:
-        raise Exception("No unit generated, something went wrong.")
+        if unit:
+            unit = AddTopicDescriptionsToUnit(unit)
+            unit.save()
+            generate_topic_files(unit)
+            generate_web_unit(unit)
+            print("Done")
+            socketio.emit(
+                "job_status",
+                {
+                    "job_id": str(job_id),
+                    "status": "complete"
+                }
+            )
+
+        else:
+            socketio.emit(
+                "job_status",
+                {
+                    "job_id": str(job_id),
+                    "status": "failed",
+                    "error": "unit creation failed"
+                }
+            )
+            raise Exception("No unit generated, something went wrong.")
+
+    except Exception as e:
+        socketio.emit(
+            "job_status",
+            {
+                "job_id": str(job_id),
+                "status": "failed",
+                "error": str(e)
+            }
+        )
+        raise
 
 def create_unit(user_prompt) -> Unit:
     user_desc = input()

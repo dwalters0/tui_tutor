@@ -64,7 +64,7 @@ Topics: {topics}
 """
     @property
     def unit_folder(self):
-        return str(Path(__file__).parent / "Curricula" / f"{self.course_code}" / f"{self.unit_code}")
+        return str(Path(__file__).parent / "Curricula" / f"{normalise_filename(self.course_code)}" / f"{normalise_filename(self.unit_code)}")
 
     @property
     def unit_complete(self):
@@ -126,7 +126,7 @@ Topics: {topics}
 
         print(f"Created unit folder at {self.unit_folder}")
 
-        path = Path(self.unit_folder) / f"{self.course_code}{self.unit_code}.yaml"
+        path = Path(self.unit_folder) / f"{normalise_filename(self.course_code)}{normalise_filename(self.unit_code)}.yaml"
         self.path = str(path)
 
         with open(self.path, "w", encoding="utf-8") as file:

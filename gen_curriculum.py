@@ -180,7 +180,8 @@ def populate_topics_using_topic_descriptions(
         topic_order,
         unit_folder,
         topic_id,
-        unit_code) -> Topic:
+        unit_code,
+        failure_count=0) -> Topic:
 
     rag_question=f"""
             {topic_summary}
@@ -214,41 +215,60 @@ The references may or may not be relevant. Use only those that directly help ans
 """
     schema1 = load_json(Path(__file__).parent / "schemas" / "topics.json")
     topic = generate_toschema(prompt, schema1)
-    topic_json = json.loads(topic)
+    print(topic)
+    try:
+        topic_json = json.loads(topic)
+        title = topic_json["topic"]
+        new_lesson_outlines = []
 
-    title = topic_json["topic"]
-    new_lesson_outlines = []
-
-    lesson_order = 0
-    for lesson_outline in topic_json["lesson_outlines"]:
-        new_lesson_outlines.append(LessonOutline(
+        lesson_order = 0
+        for lesson_outline in topic_json["lesson_outlines"]:
+            new_lesson_outlines.append(LessonOutline(
                 title=lesson_outline["title"],
                 summary=lesson_outline["summary"],
                 complete=lesson_outline["complete"],
                 id=str(uuid.uuid4()),
-                unit_folder = unit_folder,
-                topic_id = topic_id,
-                order= lesson_order
-                )
+                unit_folder=unit_folder,
+                topic_id=topic_id,
+                order=lesson_order
             )
-        lesson_order = lesson_order + 1
+            )
+            lesson_order = lesson_order + 1
 
+        topic = Topic(
+            title=title,
+            lesson_outlines=new_lesson_outlines,
+            order=topic_order,
+            unit_folder=unit_folder,
+            unit_code=unit_code,
+            id=topic_id)
 
-
-    topic = Topic(
-        title=title,
-        lesson_outlines=new_lesson_outlines,
-        order=topic_order,
-        unit_folder=unit_folder,
-        unit_code=unit_code,
-        id=topic_id)
-
-    display_fields = generate_topic_display_fields(topic)
-    topic.header = display_fields["topic_header"]
-    topic.tagline = display_fields["topic_tagline"]
-    topic.summary = display_fields["topic_summary"]
-
-    return topic
+        display_fields = generate_topic_display_fields(topic)
+        topic.header = display_fields["topic_header"]
+        topic.tagline = display_fields["topic_tagline"]
+        topic.summary = display_fields["topic_summary"]
+        return topic
+    except Exception as e:
+        print("Failure during populate_topics_using_topic_descriptions")
+        print(e)
+        failure_count += 1
+        print(f"attempting retry {failure_count}")
+        if failure_count < 5:
+            populate_topics_using_topic_descriptions(
+                course,
+                unit_name,
+                level,
+                outcomes,
+                topic_title,
+                topic_summary,
+                topic_order,
+                unit_folder,
+                topic_id,
+                unit_code,
+                failure_count)
+        else:
+            print("Out of retries raising error.")
+            raise
 
 def generate_topic_display_fields(topic):
     lesson_outlines = []
