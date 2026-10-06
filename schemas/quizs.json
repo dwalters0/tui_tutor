@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+      "question": {
+        "type": "string"
+      },
+      "answers": {
+        "type": "array",
+        "answer": {
+          "type": "string"
+        },
+        "correct": {
+          "type": "bool"
+        },
+        "required": [
+          "answer",
+          "correct"
+        ]
+      },
+      "explanation": {
+        "type": "string"
+      }
+    },
+    "required": [
+        "question",
+        "answers",
+        "explanation"
+    ],
+    "additionalProperties": false
+}

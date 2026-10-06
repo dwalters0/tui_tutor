@@ -24,6 +24,8 @@ from frog_live_text import stream_panel
 
 from gen_html import create_lesson_html, create_index
 
+from gen_quiz import gen_questions_for_lesson
+
 @dataclass
 class MenuItem:
     title: str
@@ -85,6 +87,39 @@ def run_menu_get_configure():
     title = "Configuration options"
     callable_partial =  partial(run_configure)
     return MenuItem(title,callable_partial)
+
+def run_quiz():
+    # get lesson
+    curricula_path = Path(__file__).resolve().parent / "Curricula"
+    if not curricula_path.exists():
+        print("No lessons yet. No units loaded")
+        return
+    course_path = pick_folder_title(curricula_path, "Choose Course")
+    unit_path = pick_folder_title(course_path, "Choose Unit")
+    # print(f"unit_path is {unit_path}")
+
+    topics = []
+    topic_files = os.listdir(Path(unit_path) / "topics")
+    print("Loading topic files...")
+    for topic_file in topic_files:
+        topics.append(Topic.load(Path(unit_path) / "topics" / topic_file))
+    topics.sort(key=lambda topic: topic.order)
+    topic = pick_topic(topics)
+
+    chosen_lesson_outline = pick_lesson(topic.lesson_outlines)
+
+    if not chosen_lesson_outline.generated:
+        print("No lesson to run a quiz on yet!")
+        return
+
+    lesson = Lesson.load(Path(unit_path) / "lessons" / f"{chosen_lesson_outline.id}.yaml")
+
+    gen_questions_for_lesson(lesson)
+
+def run_menu_get_quiz():
+    title = "run quiz"
+    callable_partial = partial(run_quiz)
+    return MenuItem(title, callable_partial)
 
 def run_generate_web_topic():
     curricula_path = Path(__file__).resolve().parent / "Curricula"

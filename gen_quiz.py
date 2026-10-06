@@ -28,7 +28,7 @@ def gen_questions_for_lesson(lesson):
     Generate four questions and for each one provide a correct answer and
     three incorrect answers.
 """
-    schema = load_json("./schemas/quiz.json")
+    schema = load_json("./schemas/quizs.json")
     quiz_json = json.loads(generate_toschema(prompt, schema))
 
     with open ("./quiz_output.json","w", encoding="utf-8") as file:
