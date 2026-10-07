@@ -189,6 +189,35 @@ def pick_file(root_dir):
 
     return full_path
 
+def pick_lesson_for_quizzes(lessons):
+    title = "Choose Lesson"
+    print(f"\n{title}\n" + "-" * len(title))
+
+    for i, lesson in enumerate(lessons):
+        complete_string = ""
+        if lesson.complete == True:
+            complete_string = "Complete"
+        else:
+            complete_string = "Incomplete"
+        print(f"{i}: {lesson.title} - {complete_string}")
+    print(f"{len(lessons)}: Finished selecting")
+
+    chosen_lessons = []
+
+    while True:
+        choice = input("\nSelect number: ")
+
+        if choice.isdigit():
+            idx = int(choice)
+            if 0 <= idx < len(lessons):
+                print(f"{lessons[idx].title} added")
+                chosen_lessons.append(lessons[idx])
+            elif idx == len(lessons):
+                return chosen_lessons
+        else:
+            print("Invalid selection, try again.")
+
+
 def pick_lesson(lessons):
     title = "Choose Lesson"
     print(f"\n{title}\n" + "-" * len(title))

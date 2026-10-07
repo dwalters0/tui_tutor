@@ -1,10 +1,138 @@
-{
-    "question": "What type of spaghetti is better suited to tomato-based sauces?",
-    "answers": [
-        "Spaghetti alla chitarra",
-        "Spaghetti alla chitarra",
-        "Pappardelle",
-        "Rigatoni"
-    ],
-    "explanation": "Spaghetti alla chitarra or bucatini"
-}
+[
+    {
+        "questions": [
+            {
+                "question": "Which type of spaghetti is best suited for a light, oily sauce like carbonara or aglio e olio?",
+                "answers": [
+                    {
+                        "answer": "Spaghetti alla chitarra",
+                        "correct": false
+                    },
+                    {
+                        "answer": "Pappardelle",
+                        "correct": true
+                    },
+                    {
+                        "answer": "Spaghetti alla chitarra",
+                        "correct": false
+                    },
+                    {
+                        "answer": "Spaghetti",
+                        "correct": false
+                    }
+                ],
+                "explanation": "Pappardelle is a thicker, more robust spaghetti that is well-suited for holding onto light, oily sauces. It has a rough texture that helps the sauce cling to it, resulting in a creamy and rich dish."
+            },
+            {
+                "question": "What type of spaghetti is specifically designed to be cooked until very tender?",
+                "answers": [
+                    {
+                        "answer": "Spaghetti",
+                        "correct": false
+                    },
+                    {
+                        "answer": "Spaghetti alla chitarra",
+                        "correct": false
+                    },
+                    {
+                        "answer": "Capellini",
+                        "correct": true
+                    },
+                    {
+                        "answer": "Bucatini",
+                        "correct": false
+                    }
+                ],
+                "explanation": "Capellini is a type of spaghetti that is specifically designed to be cooked until very tender. Its thin and delicate texture makes it ideal for dishes where you want the pasta to be soft and easy to digest."
+            }
+        ]
+    },
+    {
+        "questions": [
+            {
+                "question": "What is the recommended depth of water when boiling spaghetti?",
+                "answers": [
+                    {
+                        "answer": "2-3 inches",
+                        "correct": false
+                    },
+                    {
+                        "answer": "4-5 inches",
+                        "correct": true
+                    },
+                    {
+                        "answer": "6-7 inches",
+                        "correct": false
+                    },
+                    {
+                        "answer": "8-9 inches",
+                        "correct": false
+                    }
+                ],
+                "explanation": "The correct answer is 4-5 inches deep. This depth ensures that the spaghetti cooks evenly and prevents it from becoming too mushy or undercooked."
+            },
+            {
+                "question": "How long should you steam spaghetti for?",
+                "answers": [
+                    {
+                        "answer": "3-4 minutes",
+                        "correct": false
+                    },
+                    {
+                        "answer": "6-8 minutes",
+                        "correct": true
+                    },
+                    {
+                        "answer": "9-10 minutes",
+                        "correct": false
+                    },
+                    {
+                        "answer": "11-12 minutes",
+                        "correct": false
+                    }
+                ],
+                "explanation": "The correct answer is 6-8 minutes. This cooking time ensures that the spaghetti is cooked through but still retains some firmness. Steaming for too short a time can result in undercooked spaghetti, while overcooking can make it mushy."
+            }
+        ]
+    },
+    {
+        "questions": [
+            {
+                "question": "What is the recommended heat level for the olive oil when heating it in a saucepan?",
+                "answers": [
+                    {
+                        "answer": "High heat",
+                        "correct": false
+                    },
+                    {
+                        "answer": "Medium heat",
+                        "correct": true
+                    },
+                    {
+                        "answer": "Low heat",
+                        "correct": false
+                    }
+                ],
+                "explanation": "The correct answer is medium heat because it allows for a gentle and even heating of the oil, which is essential for preventing the oil from burning or smoking."
+            },
+            {
+                "question": "How long should the tomato sauce be cooked for to achieve the desired consistency?",
+                "answers": [
+                    {
+                        "answer": "10-15 minutes",
+                        "correct": false
+                    },
+                    {
+                        "answer": "20-25 minutes",
+                        "correct": true
+                    },
+                    {
+                        "answer": "30-35 minutes",
+                        "correct": false
+                    }
+                ],
+                "explanation": "The correct answer is 20-25 minutes because it allows the sauce to thicken and reduce, creating a rich and flavorful tomato sauce."
+            }
+        ]
+    }
+]

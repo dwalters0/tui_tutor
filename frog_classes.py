@@ -498,3 +498,9 @@ class topic_display_info:
     tagline: str
     summary: str
     directory=""
+
+@dataclass
+class quiz_creation_info_lesson:
+    lesson: Lesson
+    question_count: int
+

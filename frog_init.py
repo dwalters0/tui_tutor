@@ -8,10 +8,11 @@ from rich.console import Console
 from rich.table import Table
 console = Console()
 
-from frog_classes import Lesson, Topic, LessonOutline, Unit
+from frog_classes import Lesson, Topic, LessonOutline, Unit, quiz_creation_info_lesson
 
 from utilities import print_box, pick_folder, pick_topic, pick_lesson, pick_folder_title, \
-    pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it, normalise_filename
+    pick_only_file, pick_from_list, there_is_a_curricula_folder_with_something_in_it, normalise_filename, \
+    pick_lesson_for_quizzes
 
 from configuration import LastCompletedLesson, get_config
 
@@ -24,7 +25,7 @@ from frog_live_text import stream_panel
 
 from gen_html import create_lesson_html, create_index
 
-from gen_quiz import gen_questions_for_lesson
+from gen_quiz import gen_quiz_set
 
 @dataclass
 class MenuItem:
@@ -106,15 +107,20 @@ def run_quiz():
     topics.sort(key=lambda topic: topic.order)
     topic = pick_topic(topics)
 
-    chosen_lesson_outline = pick_lesson(topic.lesson_outlines)
+    chosen_lesson_outlines = pick_lesson_for_quizzes(topic.lesson_outlines)
 
-    if not chosen_lesson_outline.generated:
-        print("No lesson to run a quiz on yet!")
-        return
+    quiz_infos = []
+    for chosen_lesson_outline in chosen_lesson_outlines:
+        if not chosen_lesson_outline.generated:
+            print("No lesson to run a quiz on yet!")
+            return
 
-    lesson = Lesson.load(Path(unit_path) / "lessons" / f"{chosen_lesson_outline.id}.yaml")
+        lesson = Lesson.load(Path(unit_path) / "lessons" / f"{chosen_lesson_outline.id}.yaml")
 
-    gen_questions_for_lesson(lesson)
+        quiz_info = quiz_creation_info_lesson(lesson,2)
+        quiz_infos.append(quiz_info)
+
+    gen_quiz_set(quiz_infos)
 
 def run_menu_get_quiz():
     title = "run quiz"
