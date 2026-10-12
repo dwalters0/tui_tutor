@@ -50,7 +50,7 @@ def gen_questions_for_lesson(lesson,question_count,attempt=0):
 
             attempt += 1
             quiz_json = json.loads(quiz)
-
+            quiz_json["based_on_lesson"] = lesson.id
             return quiz_json
 
             # with open ("./quiz_output.json","w", encoding="utf-8") as file:
