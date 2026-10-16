@@ -6,9 +6,6 @@
 PyYAML
 requests
 rich
-#sentence-transformers
-#torch
-#pymupdf
 pylatexenc
 flask
 flask-socketio
